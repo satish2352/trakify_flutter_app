@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trakify/app/no_internet_app.dart';
 import 'package:trakify/app/page_route.dart';
+import 'package:trakify/screens/choose_project.dart';
 import 'package:trakify/screens/splash_screen.dart';
 import 'package:trakify/ui_components/theme_provider.dart';
 
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: Provider.of<ThemeProvider>(context).getCurrentTheme(),
       home: const SplashScreen(),
+      //home: const ChooseProjectPage(userID: "6655933947cf188e0714349a"),
     );
   }
 }

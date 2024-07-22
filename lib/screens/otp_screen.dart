@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trakify/app/network.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/api_service.dart';
@@ -139,6 +140,9 @@ class OtpPageState extends State<OtpPage> {
                   try {
                     final response = await APIService.signIn(mobileNumber);
                     DialogManager.dismissLoadingDialog(context);
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString('userID', response['id']);
+                    prefs.setString('userName', response['name']);
                     Navigator.push(context, CustomPageRoute(nextPage: ChooseProjectPage(userID: response['id'],), direction: 0),);
                   } catch (e) {
                     DialogManager.dismissLoadingDialog(context);

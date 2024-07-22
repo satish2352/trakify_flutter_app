@@ -6,7 +6,6 @@ import 'package:trakify/app/network.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/project_class.dart';
-import 'package:trakify/ui_components/build_chip_filter_list.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
 import 'package:trakify/ui_components/loading_indicator.dart';
 import 'package:trakify/ui_components/navbar.dart';
@@ -15,14 +14,14 @@ import 'package:trakify/ui_components/text.dart';
 
 class ChooseProjectPage extends StatefulWidget {
   final String userID;
+
   const ChooseProjectPage({super.key, required this.userID});
 
   @override
   ChooseProjectPageState createState() => ChooseProjectPageState();
 }
 
-class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware{
-
+class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
   late List<Project> projects = [];
   String searchText = '';
   bool manuallyTapped = false;
@@ -80,16 +79,21 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware{
       //DialogManager.showInfoDialog(context, 'Pass', projects.toString());
     } else {
       //API fetch Error
-      DialogManager.showInfoDialog(context, 'Fail', "Please check your internet connection");
+      DialogManager.showInfoDialog(
+          context, 'Fail', "Please check your internet connection");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-    String imageString = Theme.of(context).brightness==Brightness.light ? 'assets/images/logo_blue.png' : 'assets/images/logo_white.png';
-    Color bgColor = Theme.of(context).brightness==Brightness.light ? Colors.white : Colors.black;
+    String imageString = Theme.of(context).brightness == Brightness.light
+        ? 'assets/images/logo_blue.png'
+        : 'assets/images/logo_white.png';
+
+    Color bgColor = Theme.of(context).brightness == Brightness.light
+        ? Colors.white
+        : Colors.black;
 
     return WillPopScope(
       onWillPop: () async {
@@ -102,50 +106,45 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware{
         }
       },
       child: Scaffold(
-        key: scaffoldKey, backgroundColor: bgColor,
-        appBar: AppBar(elevation: 4, backgroundColor: bgColor,
-          title: Image.asset(imageString, fit: BoxFit.fitWidth,
-            width: MediaQuery.of(context).size.width*0.2,
-            height: MediaQuery.of(context).size.height*0.2,
+        key: scaffoldKey, //backgroundColor: bgColor,
+        appBar: AppBar(
+          elevation: 4,
+          //backgroundColor: bgColor,
+          title: Image.asset(
+            imageString,
+            fit: BoxFit.fitWidth,
+            width: MediaQuery.of(context).size.width * 0.2,
+            height: MediaQuery.of(context).size.height * 0.2,
           ),
-          leading: IconButton(onPressed: (){
-            if (scaffoldKey.currentState!.isDrawerOpen) {
-              scaffoldKey.currentState!.openEndDrawer();
-            } else {
-              _exitApp();
-            }
-          }, icon: const Icon(Icons.arrow_back_ios)),
-          actions: [IconButton(icon: const Icon(Icons.menu_outlined), onPressed: () { _showBottomDrawer(context); },),],
+          leading: IconButton(
+              onPressed: () {
+                if (scaffoldKey.currentState!.isDrawerOpen) {
+                  scaffoldKey.currentState!.openEndDrawer();
+                } else {
+                  _exitApp();
+                }
+              },
+              icon: const Icon(Icons.arrow_back_ios)),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.menu_outlined),
+              onPressed: () {
+                _showBottomDrawer(context);
+              },
+            ),
+          ],
         ),
         //drawer: const NavBar(),
-        body: isLoading ? LoadingIndicator.build() : RefreshIndicator(strokeWidth: 2, color: Colors.blue,
-          onRefresh: fetchProjects,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SafeArea(
-              child: Container(padding: const EdgeInsets.all(10),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CarouselSlider.builder(itemCount: projects.length,
-                      options: CarouselOptions(
-                        aspectRatio: 1,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: false,
-                        viewportFraction: 0.8,
-                        initialPage: 0,
-                        autoPlay: false,
-                      ),
-                      itemBuilder: (context, index, _) {
-                      return Padding(padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ProjectCardWidget(project: projects[index]),
-                      );},
-                    ),
-                  ],
+        body: isLoading ? LoadingIndicator.build()
+            : RefreshIndicator(strokeWidth: 2, color: Colors.blue, onRefresh: fetchProjects,
+                child: Container(padding: const EdgeInsets.all(10),
+                  child: ListView.builder(shrinkWrap: true,
+                      itemCount: projects.length,
+                      itemBuilder: (context, index) {
+                        return ProjectCardWidget(project: projects[index],);
+                      }),
                 ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

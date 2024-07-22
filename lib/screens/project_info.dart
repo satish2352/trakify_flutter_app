@@ -57,29 +57,6 @@ class ProjectInfoState extends State<ProjectInfo> {
                   child: FadeInAnimation(
                     direction: 'down',
                     delay: 0.4,
-                    /*
-                    child: Row(
-                      children:[
-                        Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start,
-                            children:[
-                          columnName("Name"),
-                          columnName("Description"),
-                          columnName("Address"),
-                          columnName("City"),
-                          columnName("State"),
-                        ]),
-                        const SizedBox(width: 20),
-                        Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start,
-                            children:[
-                          columnValue(project.name),
-                          columnValue(project.description),
-                          columnValue(project.area),
-                          columnValue(project.city),
-                          columnValue(project.state),
-                        ]),
-                      ],
-                    ),
-                    */
                     child: Column(children: [
                       const SizedBox(height: 10),
                       MyDetailsItem(itemName: 'Name', value: project.name),

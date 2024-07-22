@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/project_class.dart';
+import 'package:trakify/screens/project_info.dart';
 import 'package:trakify/screens/wings.dart';
 import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/text.dart';
@@ -15,18 +16,23 @@ class ProjectCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //height: 160, width: MediaQuery.of(context).size.width,
     return SizedBox(height: 160, width: MediaQuery.of(context).size.width,
       child: GestureDetector(
         onTap: (){
-          Navigator.push(context, CustomPageRoute(nextPage: WingScreen(selectedProjectId: project.id), direction: 1));
+          Navigator.push(context, CustomPageRoute(
+              //nextPage: WingScreen(selectedProjectId: project.id), direction: 1)
+              nextPage: ProjectInfo(project: project), direction: 1)
+          );
         },
         child: Stack(
           children: [
             Positioned(top: 40, left: 40,
-              child: Container(padding: const EdgeInsets.only(right: 20),
+              child: Container(padding: const EdgeInsets.only(right: 25),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.grey, width: 1,),
+                  color: Colors.grey[200],
                 ),
                 child: Padding(padding: const EdgeInsets.only(left: 60),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min,

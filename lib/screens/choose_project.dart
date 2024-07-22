@@ -22,6 +22,7 @@ class ChooseProjectPage extends StatefulWidget {
 }
 
 class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Project> projects = [];
   String searchText = '';
   bool manuallyTapped = false;
@@ -86,14 +87,9 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     String imageString = Theme.of(context).brightness == Brightness.light
         ? 'assets/images/logo_blue.png'
         : 'assets/images/logo_white.png';
-
-    Color bgColor = Theme.of(context).brightness == Brightness.light
-        ? Colors.white
-        : Colors.black;
 
     return WillPopScope(
       onWillPop: () async {
@@ -106,10 +102,9 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
         }
       },
       child: Scaffold(
-        key: scaffoldKey, //backgroundColor: bgColor,
+        key: scaffoldKey,
         appBar: AppBar(
           elevation: 4,
-          //backgroundColor: bgColor,
           title: Image.asset(
             imageString,
             fit: BoxFit.fitWidth,
@@ -117,14 +112,15 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
             height: MediaQuery.of(context).size.height * 0.2,
           ),
           leading: IconButton(
-              onPressed: () {
-                if (scaffoldKey.currentState!.isDrawerOpen) {
-                  scaffoldKey.currentState!.openEndDrawer();
-                } else {
-                  _exitApp();
-                }
-              },
-              icon: const Icon(Icons.arrow_back_ios)),
+            onPressed: () {
+              if (scaffoldKey.currentState!.isDrawerOpen) {
+                scaffoldKey.currentState!.openEndDrawer();
+              } else {
+                _exitApp();
+              }
+            },
+            icon: const Icon(Icons.arrow_back_ios),
+          ),
           actions: [
             IconButton(
               icon: const Icon(Icons.menu_outlined),
@@ -134,17 +130,73 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
             ),
           ],
         ),
-        //drawer: const NavBar(),
-        body: isLoading ? LoadingIndicator.build()
-            : RefreshIndicator(strokeWidth: 2, color: Colors.blue, onRefresh: fetchProjects,
-                child: Container(padding: const EdgeInsets.all(10),
-                  child: ListView.builder(shrinkWrap: true,
-                      itemCount: projects.length,
-                      itemBuilder: (context, index) {
-                        return ProjectCardWidget(project: projects[index],);
-                      }),
+        body: Stack(
+          children: [
+            Container(
+              height: MediaQuery.sizeOf(context).height*0.5,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/choose_project_bg.png'),
+                  fit: BoxFit.fill,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
               ),
+            ),
+            RefreshIndicator(strokeWidth: 2, color: Colors.blue, onRefresh: fetchProjects,
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.6,
+                minChildSize: 0.6,
+                maxChildSize: 1.0,
+                expand: true,
+                builder:
+                    (BuildContext context, ScrollController scrollController) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                            padding: EdgeInsets.only(left: 10, top: 5, bottom: 8),
+                            child: MyHeadingText(
+                              text: "PROJECT LIST",
+                              color: Colors.black,
+                            )),
+                        isLoading
+                            ? const Center(child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.blue),
+                                  strokeWidth: 2,
+                                ),
+                            )
+                            : Expanded(
+                                child: ListView.builder(
+                                  controller: scrollController,
+                                  itemCount: projects.length,
+                                  itemBuilder: (context, index) {
+                                    return Center(
+                                        child: ProjectCardWidget(
+                                            project: projects[index]));
+                                  },
+                                ),
+                              ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

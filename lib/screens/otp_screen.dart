@@ -13,7 +13,9 @@ import 'package:trakify/ui_components/text.dart';
 class OtpPage extends StatefulWidget{
 
   final String mobileNumber;
-  OtpPage({super.key, required this.mobileNumber});
+  final bool staySignedIn;
+
+  const OtpPage({super.key, required this.mobileNumber, required this.staySignedIn});
 
   @override
   OtpPageState createState() => OtpPageState();
@@ -22,7 +24,6 @@ class OtpPage extends StatefulWidget{
 class OtpPageState extends State<OtpPage> {
 
   late String mobileNumber;
-
   final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
   final List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
 
@@ -145,6 +146,9 @@ class OtpPageState extends State<OtpPage> {
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         prefs.setString('userID', response['id']);
                         prefs.setString('userName', response['name']);
+                        if(widget.staySignedIn){
+                          prefs.setBool('isSignedIn', true);
+                        }
                         Navigator.push(context, CustomPageRoute(nextPage: ChooseProjectPage(userID: response['id'],), direction: 0),);
                       } catch (e) {
                         DialogManager.dismissLoadingDialog(context);

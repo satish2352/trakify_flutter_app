@@ -101,6 +101,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
     });
   }
 
+  /*
   void _showHelp() {
     showModalBottomSheet<void>(
       context: context,
@@ -134,6 +135,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
       },
     );
   }
+  */
 
   Row legendRow(String text, Color color) {
     return Row(

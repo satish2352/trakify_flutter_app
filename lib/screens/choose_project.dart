@@ -159,29 +159,18 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Padding(
-                              padding: EdgeInsets.only(left: 10, top: 5, bottom: 8),
-                              child: MyHeadingText(
-                                text: "Project List",
-                                color: Colors.black,
-                              )),
-                          isLoading
-                              ? const Center(child: CircularProgressIndicator(
-                                    valueColor:
-                                        AlwaysStoppedAnimation<Color>(Colors.blue),
-                                    strokeWidth: 2,
-                                  ),
-                              )
+                          const Padding(padding: EdgeInsets.only(left: 10, top: 5, bottom: 8),
+                              child: MyHeadingText(text: "Project List", color: Colors.black,)
+                          ),
+                          isLoading ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), strokeWidth: 2,),)
                               : Expanded(
                                   child: ListView.builder(
                                     controller: scrollController,
                                     itemCount: projects.length,
                                     itemBuilder: (context, index) {
-                                      return Center(
-                                          child: ProjectCardWidget(
-                                              project: projects[index]));
+                                      return Center(child: ProjectCardWidget(project: projects[index]));
                                     },
                                   ),
                                 ),

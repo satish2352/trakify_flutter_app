@@ -37,8 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if(!mounted) return;
       String? userID = prefs.getString('userID');
-      String? isSignedIn = prefs.getString('signedIn');
-      if (userID != null && userID.isNotEmpty && isSignedIn != null && isSignedIn.isNotEmpty) {
+      bool? isSignedIn = prefs.getBool('isSignedIn');
+      if (userID != null && userID.isNotEmpty && (isSignedIn ?? false)) {
         nextScreen = ChooseProjectPage(userID: userID);
       } else {
         nextScreen = const LoginDisplayScreen();

@@ -68,6 +68,26 @@ class SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   const SizedBox(height: 20.0),
+                  FadeInAnimation(direction: 'down', delay: 1.4,
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Checkbox(
+                              value: staySignedIn,
+                              onChanged: (value) {
+                                setState(() {
+                                  staySignedIn = value ?? false;
+                                });
+                              },
+                            ),
+                            const MyLinkText(text: "Remember me"),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
                   FadeInAnimation(direction: 'down', delay: 1.6,
                     child: Row(mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -80,20 +100,15 @@ class SignInPageState extends State<SignInPage> {
                             contact: 9321085764
                             */
                             if(mobile.isNotEmpty) {
-                              NetworkUtil.checkConnectionAndProceed(
-                                  context, () async {
+                              NetworkUtil.checkConnectionAndProceed(context, () async {
                                 DialogManager.showLoadingDialog(context);
                                 try {
                                   //final response = await APIService.signIn(mobile);
                                   DialogManager.dismissLoadingDialog(context);
-                                  Navigator.push(context, CustomPageRoute(
-                                      nextPage: OtpPage(mobileNumber: mobile),
-                                      direction: 0),);
+                                  Navigator.push(context, CustomPageRoute(nextPage: OtpPage(mobileNumber: mobile, staySignedIn: staySignedIn,), direction: 0),);
                                 } catch (e) {
                                   DialogManager.dismissLoadingDialog(context);
-                                  //DialogManager.showInfoDialog(context, 'Error', 'Mobile or password is incorrect\nOr user not registered');
-                                  DialogManager.showInfoDialog(
-                                      context, 'Error', e.toString());
+                                  DialogManager.showInfoDialog(context, 'Error', e.toString());
                                 }
                               });
                             }
@@ -129,13 +144,5 @@ class SignInPageState extends State<SignInPage> {
     }
     return sanitizedValue;
   }
-
-  /*
-  bool _isPasswordValid(String password) {
-    final RegExp passwordRegex =
-        RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$');
-    return passwordRegex.hasMatch(password);
-  }
-  */
 
 }

@@ -101,42 +101,6 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
     });
   }
 
-  /*
-  void _showHelp() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Center(child: MyHeadingText(text: 'Info')),
-                const SizedBox(
-                  height: 20,
-                ),
-                const MySimpleText(text: "Color Details", size: 20, bold: true),
-                const SizedBox(height: 10,),
-                legendRow('Flat is Booked', MyColor.gridGreen),
-                legendRow('Flat is Available', MyColor.gridYellow),
-                legendRow('Flat is Blocked', MyColor.gridRed),
-                legendRow('Flat is on Hold', MyColor.gridBlue),
-                const SizedBox(height: 20,),
-                const MySimpleText(text: "Floor Details", size: 20, bold: true),
-                const SizedBox(height: 10,),
-                const MySimpleText(text: "Under the 'FLATS' section, the left side has floor indicator which shows all the floors.\n- F stands for floors above ground floor.\n- G stands for Ground Floor.\n- UG means UnderGround Floors", size: 16),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-  */
-
   Row legendRow(String text, Color color) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,

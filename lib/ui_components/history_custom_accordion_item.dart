@@ -18,8 +18,8 @@ class CustomAccordionState extends State<CustomAccordion> {
 
   @override
   Widget build(BuildContext context) {
-    Color headerBgColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black54;
-    Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.black87 : Colors.white;
+    //Color headerBgColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black54;
+    //Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.black87 : Colors.white;
 
     return Container(
       decoration: BoxDecoration(
@@ -31,7 +31,7 @@ class CustomAccordionState extends State<CustomAccordion> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: headerBgColor,
+              color: Colors.black54,
               borderRadius: _isExpanded ? const BorderRadius.vertical(top: Radius.circular(20)) : BorderRadius.circular(20),
             ),
             child: Row(
@@ -43,7 +43,7 @@ class CustomAccordionState extends State<CustomAccordion> {
                     MySimpleText(
                       text: "Flat '${widget.historyItem.newState}' by ${widget.historyItem.updatedBy.split(' ').first}",
                       size: 16,
-                      color: textColor,
+                      color: Colors.white,
                     ),
                     const SizedBox(height: 2),
                     Row(
@@ -57,7 +57,7 @@ class CustomAccordionState extends State<CustomAccordion> {
                           ),
                         ),
                         const SizedBox(width: 5),
-                        Icon(Icons.arrow_forward_outlined, color: textColor, size: 15),
+                        const Icon(Icons.arrow_forward_outlined, color: Colors.white, size: 15),
                         const SizedBox(width: 5),
                         Container(
                           height: 10,

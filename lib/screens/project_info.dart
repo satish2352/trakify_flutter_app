@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/project_class.dart';
 import 'package:trakify/screens/wings.dart';
+import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/button.dart';
 import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/custom_appbar.dart';
@@ -58,67 +59,80 @@ class ProjectInfoState extends State<ProjectInfo> {
               Padding(padding: const EdgeInsets.all(20.0),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MyHeadingText(text: project.name, color: Colors.black,),
-                    Row(children: [
-                      SizedBox(width: MediaQuery.sizeOf(context).width*0.05,
-                          height: MediaQuery.sizeOf(context).width*0.05,
-                          child: Image.asset("assets/images/building.png")
-                      ),
-                      const SizedBox(width: 10,),
-                      MySimpleText(text: project.type, size: 14),
-                    ],),
-                    Row(children: [
-                      SizedBox(width: MediaQuery.sizeOf(context).width*0.05,
-                          height: MediaQuery.sizeOf(context).width*0.05,
-                          child: Image.asset("assets/images/location.png")),
-                      const SizedBox(width: 10,),
-                      MySimpleText(text: "${project.city}, ${project.state}", size: 14),
-                    ],),
+                    FadeInAnimation(delay: 1, direction: "down",
+                        child: MyHeadingText(text: project.name, color: Colors.black,)),
+                    FadeInAnimation(delay: 1.6, direction: "down",
+                      child: Column(children: [
+                        Row(children: [
+                          SizedBox(width: MediaQuery.sizeOf(context).width*0.05,
+                              height: MediaQuery.sizeOf(context).width*0.05,
+                              child: Image.asset("assets/images/building.png")
+                          ),
+                          const SizedBox(width: 10,),
+                          MySimpleText(text: project.type, size: 14),
+                        ],),
+                        Row(children: [
+                          SizedBox(width: MediaQuery.sizeOf(context).width*0.05,
+                              height: MediaQuery.sizeOf(context).width*0.05,
+                              child: Image.asset("assets/images/location.png")),
+                          const SizedBox(width: 10,),
+                          MySimpleText(text: "${project.city}, ${project.state}", size: 14),
+                        ],),
+                      ],),
+                    ),
                     const SizedBox(height: 20,),
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 30,),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey),
-                          color: Colors.white,
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const MySimpleText(text: "Total wings' flats", size: 18, color: Colors.black, bold: true,),
-                            const SizedBox(width: 10,),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: MySimpleText(text:
-                                (project.availableFlats+project.blockedFlats+project.bookedFlats+project.heldFlats).toString(),
-                                color: Colors.white, bold: true, size: 18,),
-                              ),
-                          ],
+                    FadeInAnimation(delay: 2.4, direction: "down",
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 30,),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey),
+                            color: Colors.white,
+                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const MySimpleText(text: "Total wings' flats", size: 18, color: Colors.black, bold: true,),
+                              const SizedBox(width: 10,),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: MySimpleText(text:
+                                  (project.availableFlats+project.blockedFlats+project.bookedFlats+project.heldFlats).toString(),
+                                  color: Colors.white, bold: true, size: 18,),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 20,),
                     Row(mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        customStateWidget("AVAILABLE", MyColor.gridYellow, project.availableFlats, "assets/images/ic_available.png"),
-                        customStateWidget("BOOKED", MyColor.gridGreen, project.bookedFlats, "assets/images/ic_booked.png"),
+                        FadeInAnimation(delay: 2.6, direction: "right",
+                            child: customStateWidget("AVAILABLE", MyColor.gridYellow, project.availableFlats, "assets/images/ic_available.png")),
+                        FadeInAnimation(delay: 2.6, direction: "left",
+                            child: customStateWidget("BOOKED", MyColor.gridGreen, project.bookedFlats, "assets/images/ic_booked.png")),
                       ],
                     ),
                     Row(mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        customStateWidget("ON HOLD", MyColor.gridBlue, project.heldFlats, "assets/images/ic_hold.png"),
-                        customStateWidget("BLOCKED", MyColor.gridRed, project.blockedFlats, "assets/images/ic_blocked.png"),
+                        FadeInAnimation(delay: 2.6, direction: "right",
+                            child: customStateWidget("ON HOLD", MyColor.gridBlue, project.heldFlats, "assets/images/ic_hold.png")),
+                        FadeInAnimation(delay: 2.6, direction: "left",
+                            child: customStateWidget("BLOCKED", MyColor.gridRed, project.blockedFlats, "assets/images/ic_blocked.png")),
                       ],
                     ),
                     const SizedBox(height: 10,),
-                    Center(
-                      child: MyButton(text: "SELECT WING", onPressed: (){
-                        Navigator.push(context, CustomPageRoute(nextPage: WingScreen(project: project,), direction: 0),);
-                      }),
+                    FadeInAnimation(delay: 2.6, direction: "up",
+                      child: Center(
+                        child: MyButton(text: "SELECT WING", onPressed: (){
+                          Navigator.push(context, CustomPageRoute(nextPage: WingScreen(project: project,), direction: 0),);
+                        }),
+                      ),
                     )
                   ],
                 ),

@@ -30,7 +30,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Trakify',
       theme: ThemeData(
-        brightness: Brightness.light,
         primaryColorDark: Colors.black,
         primaryColorLight: Colors.grey[700],
         primaryColor: Colors.blueAccent,

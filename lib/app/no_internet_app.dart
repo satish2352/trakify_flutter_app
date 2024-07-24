@@ -14,7 +14,6 @@ class NoInternetApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.light,
         primaryColorDark: Colors.black,
         primaryColorLight: Colors.grey[700],
         primaryColor: Colors.blueAccent,

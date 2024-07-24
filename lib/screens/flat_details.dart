@@ -8,6 +8,7 @@ import 'package:trakify/data/flat_class.dart';
 import 'package:trakify/data/project_class.dart';
 import 'package:trakify/screens/flat_history.dart';
 import 'package:trakify/screens/update_flat.dart';
+import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/button.dart';
 import 'package:trakify/ui_components/custom_appbar.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
@@ -69,7 +70,12 @@ class FlatDetailsState extends State<FlatDetails> with RouteAware {
   Future<void> _fetchFlat() async {
     FetchResult result = await APIService.fetchFlatDetails(widget.floorId, widget.flatId);
     if (!mounted) return;
-    //DialogManager.showInfoDialog(context, 'Info', '${widget.floorId}\n${widget.flatId}\n${result.toString()}');
+    /*
+    DialogManager.showInfoDialog(context, 'Info', '${widget.floorId}\n'
+        '${widget.flatId}\n'
+        '${result.error.toString()}\n'
+        '${result.success.toString()}\n');
+    */
     if (result.success) {
       setState(() {
         flat = result.data[0];
@@ -147,62 +153,78 @@ class FlatDetailsState extends State<FlatDetails> with RouteAware {
                             imageContainer("assets/images/flat_details_bg.png"),
                         ],),
                         const SizedBox(height: 10),
-                        MyHeadingText(text: widget.project.name, color: Colors.black),
+                        FadeInAnimation(delay: 0.6, direction: "down", child: MyHeadingText(text: widget.project.name, color: Colors.black)),
                         //const SizedBox(height: 5),
-                        Container(padding: const EdgeInsets.symmetric(vertical: 5),
-                          width: MediaQuery.sizeOf(context).width*0.8,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.blue, Colors.white],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                        FadeInAnimation(delay: 0.6, direction: "down",
+                          child: Container(padding: const EdgeInsets.symmetric(vertical: 5),
+                            width: MediaQuery.sizeOf(context).width*0.8,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.blue, Colors.white],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
                             ),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                            child: Text(
-                              "Wing ${widget.wingName} | ${widget.floorNumber} | Flat No. ${flat.flatNumber}",
-                              style: const TextStyle(
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                              child: Text(
+                                "Wing ${widget.wingName} | ${widget.floorNumber} | Flat No. ${flat.flatNumber}",
+                                style: const TextStyle(
+                                  fontFamily: 'OpenSans',
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
                         const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.05,
-                              height: MediaQuery.of(context).size.width * 0.05,
-                              child: Image.asset("assets/images/location.png"),
-                            ),
-                            const SizedBox(width: 10),
-                            MySimpleText(text: "${widget.project.city}, ${widget
-                                .project.state}", size: 14),
-                          ],
+                        FadeInAnimation(delay: 0.6, direction: "down",
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height: MediaQuery.of(context).size.width * 0.05,
+                                child: Image.asset("assets/images/location.png"),
+                              ),
+                              const SizedBox(width: 10),
+                              MySimpleText(text: "${widget.project.city}, ${widget
+                                  .project.state}", size: 14),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            const Icon(Icons.currency_rupee, size: 20,),
-                            MyHeadingText(text: formatPrice(flat.price), color: Colors.black),
-                          ],
+                        FadeInAnimation(delay: 1.2, direction: "down",
+                          child: Row(
+                            children: [
+                              const Icon(Icons.currency_rupee, size: 20,),
+                              MyHeadingText(text: formatPrice(flat.price), color: Colors.black),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 10),
-                        const MySimpleText(text: "Description", size: 16, color: Colors.black, bold: true,),
-                        MySimpleText(text: "A ${flat.bhk} BHK flat,\nspread across ${flat.area} square foot." , size: 16, color: Colors.black,),
+                        FadeInAnimation(delay: 1.2, direction: "down",
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const MySimpleText(text: "Description", size: 16, color: Colors.black, bold: true,),
+                              MySimpleText(text: "A ${flat.bhk} BHK flat,\nspread across ${flat.area} square foot." , size: 16, color: Colors.black,),
+                            ],
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, mainAxisSize: MainAxisSize.min,
                           children: [
-                            MyButton(text: flat.flatStatus, onPressed: (){
-                              Navigator.push(context, CustomPageRoute(nextPage: UpdateFlat(flat: flat, project: widget.project, wingName: widget.wingName, floorNumber: widget.floorNumber, floorId: widget.floorId,), direction: 0),);
-                            }),
-                            MyCardIconButton(onPressed: (){
-                              Navigator.push(context, CustomPageRoute(nextPage: FlatHistory(flatId: flat.id, flatNumber: flat.flatNumber,), direction: 0),);
-                            }, icon: Icons.history),
+                            FadeInAnimation(delay: 1.8, direction: "right",
+                              child: MyButton(text: flat.flatStatus, onPressed: (){
+                                Navigator.push(context, CustomPageRoute(nextPage: UpdateFlat(flat: flat, project: widget.project, wingName: widget.wingName, floorNumber: widget.floorNumber, floorId: widget.floorId,), direction: 0),);
+                              }),
+                            ),
+                            FadeInAnimation(delay: 1.8, direction: "left",
+                              child: MyCardIconButton(onPressed: (){
+                                Navigator.push(context, CustomPageRoute(nextPage: FlatHistory(flatId: flat.id, flatNumber: flat.flatNumber,), direction: 0),);
+                              }, icon: Icons.history),
+                            ),
                           ],
                         )
                       ],
@@ -218,10 +240,12 @@ class FlatDetailsState extends State<FlatDetails> with RouteAware {
   }
 
   imageContainer(String s) {
-    return Padding(padding: const EdgeInsets.all(2),
-      child: Container(width: 40, height: 40,
-        decoration: BoxDecoration(image: DecorationImage(image: AssetImage(s)),
-          borderRadius: BorderRadius.circular(5),
+    return FadeInAnimation(delay: 0.6, direction: "right",
+      child: Padding(padding: const EdgeInsets.all(2),
+        child: Container(width: 40, height: 40,
+          decoration: BoxDecoration(image: DecorationImage(image: AssetImage(s)),
+            borderRadius: BorderRadius.circular(5),
+          ),
         ),
       ),
     );

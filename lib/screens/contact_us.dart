@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/button.dart';
 import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/custom_appbar.dart';
@@ -83,66 +84,82 @@ class ContactUsState extends State<ContactUs> {
                     children: [
                       Column(
                         children: [
-                          const MyHeadingText(text: "CONTACT US", color: Colors.black,),
-                          const SizedBox(height: 20,),
-                          MyIconTextField(hintText: "Name", ic: const Icon(Icons.person), controller: _nameController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your name';
-                              }
-                              return null;
-                            },
+                          AppearAnimation(
+                            child: Column(
+                              children: [
+                                const MyHeadingText(text: "CONTACT US", color: Colors.black,),
+                                const SizedBox(height: 20,),
+                                MyIconTextField(hintText: "Name", ic: const Icon(Icons.person), controller: _nameController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your name';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 10,),
+                                MyIconTextField(hintText: "Mobile Number", ic: const Icon(Icons.call), controller: _numberController,
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty || value.length<10) {
+                                      return 'Please enter a valid number';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 10,),
+                                MyIconTextField(hintText: "Email Id", ic: const Icon(Icons.mail), controller: _emailController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your name';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 20,),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 10,),
-                          MyIconTextField(hintText: "Mobile Number", ic: const Icon(Icons.call), controller: _numberController,
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.isEmpty || value.length<10) {
-                                return 'Please enter a valid number';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10,),
-                          MyIconTextField(hintText: "Email Id", ic: const Icon(Icons.mail), controller: _emailController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your name';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20,),
+                AppearAnimation(
+                  child: Column(
+                    children: [
                           const MySimpleText(text: "Budget", size: 18, bold: true, color: Colors.black,),
                           const SizedBox(height: 10,),
                           choiceChipRow(),
                           const SizedBox(height: 20,),
+                          ],),),
+                AppearAnimation(
+                  child: Column(
+                    children: [
                           const MySimpleText(text: "Number of bedrooms", size: 18, bold: true, color: Colors.black,),
                           const SizedBox(height: 10,),
                           radioButtonForFlatStatus(),
                           const SizedBox(height: 20,),
-                          Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              MyButton(text: "SUBMIT", onPressed: () {
-                                if (_formKey.currentState?.validate() ??
-                                    false) {
-                                  if (_selectedBudget.isEmpty ||
-                                      _selectedBhkValue.isEmpty) {
-                                    DialogManager.showErrorDialog(
-                                        context, "Info Incomplete",
-                                        "Please select Budget and BHK");
-                                  } else {
-                                    addDataInInquiryApi(
-                                      _nameController.text,
-                                      _numberController.text,
-                                      _emailController.text,
-                                      _selectedBudget,
-                                      _selectedBhkValue,
-                                    );
+                          ],),),
+                          AppearAnimation(
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                MyButton(text: "SUBMIT", onPressed: () {
+                                  if (_formKey.currentState?.validate() ??
+                                      false) {
+                                    if (_selectedBudget.isEmpty ||
+                                        _selectedBhkValue.isEmpty) {
+                                      DialogManager.showErrorDialog(
+                                          context, "Info Incomplete",
+                                          "Please select Budget and BHK");
+                                    } else {
+                                      addDataInInquiryApi(
+                                        _nameController.text,
+                                        _numberController.text,
+                                        _emailController.text,
+                                        _selectedBudget,
+                                        _selectedBhkValue,
+                                      );
+                                    }
                                   }
-                                }
-                              }),
-                            ],
+                                }),
+                              ],
+                            ),
                           )
                         ],
                       )

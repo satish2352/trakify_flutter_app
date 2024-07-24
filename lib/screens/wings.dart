@@ -5,6 +5,7 @@ import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/project_class.dart';
 import 'package:trakify/data/wing_class.dart';
 import 'package:trakify/screens/wings_dashboard.dart';
+import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/custom_appbar.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
@@ -136,33 +137,37 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
                     ) : ListView(
                       controller: scrollController,
                       children: [
-                        MyHeadingText(text: widget.project.name, color: Colors.black),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.05,
-                              height: MediaQuery.of(context).size.width * 0.05,
-                              child: Image.asset("assets/images/building.png"),
+                        FadeInAnimation(delay: 0.6, direction: "down",
+                            child: MyHeadingText(text: widget.project.name, color: Colors.black)),
+                        FadeInAnimation(delay: 1, direction: "down",
+                          child: Column(children:[
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.05,
+                                  height: MediaQuery.of(context).size.width * 0.05,
+                                  child: Image.asset("assets/images/building.png"),
+                                ),
+                                const SizedBox(width: 10),
+                                MySimpleText(text: widget.project.type, size: 14),
+                              ],
                             ),
-                            const SizedBox(width: 10),
-                            MySimpleText(text: widget.project.type, size: 14),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.05,
-                              height: MediaQuery.of(context).size.width * 0.05,
-                              child: Image.asset("assets/images/location.png"),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.05,
+                                  height: MediaQuery.of(context).size.width * 0.05,
+                                  child: Image.asset("assets/images/location.png"),
+                                ),
+                                const SizedBox(width: 10),
+                                MySimpleText(text: "${widget.project.city}, ${widget.project.state}", size: 14),
+                              ],
                             ),
-                            const SizedBox(width: 10),
-                            MySimpleText(text: "${widget.project.city}, ${widget.project.state}", size: 14),
-                          ],
+                          ]),
                         ),
                         const SizedBox(height: 20),
-                        const Center(child: MySubHeadingText(text: "SELECT WING", color: Colors.black)),
+                        const FadeInAnimation(delay: 1.4, direction: "down", child: Center(child: MySubHeadingText(text: "SELECT WING", color: Colors.black))),
                         const SizedBox(height: 20),
-                        //...wings.map(_wingItem),
                         SizedBox(height: MediaQuery.sizeOf(context).height*0.6,
                           child: GridView.builder(
                             controller: scrollController,
@@ -174,7 +179,8 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
                             ),
                             itemCount: wings.length,
                             itemBuilder: (context, index) {
-                              return _wingItem(wings[index]);
+                              String direction = (index%2==0) ? "right" : "left";
+                              return FadeInAnimation(delay: 1.4, direction: direction, child: _wingItem(wings[index]));
                             },
                           ),
                         ),

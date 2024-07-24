@@ -5,6 +5,7 @@ import 'package:trakify/app/network.dart';
 import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/flat_class.dart';
 import 'package:trakify/data/project_class.dart';
+import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/button.dart';
 import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/custom_appbar.dart';
@@ -138,44 +139,53 @@ class UpdateFlatState extends State<UpdateFlat> {
                       controller: scrollController,
                       children: [
                         const SizedBox(height: 10),
-                        MyHeadingText(text: widget.project.name, color: Colors.black),
-                        //const SizedBox(height: 5),
-                        Container(padding: const EdgeInsets.symmetric(vertical: 5),
-                          width: MediaQuery.sizeOf(context).width*0.8,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.blue, Colors.white],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                            child: Text(
-                              "Wing ${widget.wingName} | ${widget.floorNumber} | Flat No. ${widget.flat.flatNumber}",
-                              style: const TextStyle(
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                        FadeInAnimation(delay: 0.6, direction: "down",
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyHeadingText(text: widget.project.name, color: Colors.black),
+                              //const SizedBox(height: 5),
+                              Container(padding: const EdgeInsets.symmetric(vertical: 5),
+                                width: MediaQuery.sizeOf(context).width*0.8,
+                                decoration: const BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [Colors.blue, Colors.white],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                                  child: Text(
+                                    "Wing ${widget.wingName} | ${widget.floorNumber} | Flat No. ${widget.flat.flatNumber}",
+                                    style: const TextStyle(
+                                      fontFamily: 'OpenSans',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 5),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.05,
+                                    height: MediaQuery.of(context).size.width * 0.05,
+                                    child: Image.asset("assets/images/location.png"),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  MySimpleText(text: "${widget.project.city}, ${widget
+                                      .project.state}", size: 14),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.05,
-                              height: MediaQuery.of(context).size.width * 0.05,
-                              child: Image.asset("assets/images/location.png"),
-                            ),
-                            const SizedBox(width: 10),
-                            MySimpleText(text: "${widget.project.city}, ${widget
-                                .project.state}", size: 14),
-                          ],
                         ),
                         const SizedBox(height: 10),
+                FadeInAnimation(delay: 1.2, direction: "down",
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                         const MyHeadingText(text: "ACTION", color: Colors.black),
                         const SizedBox(height: 10),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, mainAxisSize: MainAxisSize.max,
@@ -183,7 +193,11 @@ class UpdateFlatState extends State<UpdateFlat> {
                             radioButtonForFlatStatus(),
                           ],
                         ),
+                        ],),),
                         const SizedBox(height: 10),
+                FadeInAnimation(delay: 2.0, direction: "down",
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                         MyIconTextField(hintText: "Customer Name", ic: const Icon(Icons.person),
                           controller: customerNameController,
                           onChanged: (newValue){
@@ -211,18 +225,21 @@ class UpdateFlatState extends State<UpdateFlat> {
                             });
                           },
                         ),
+                        ],),),
                         const SizedBox(height: 20),
-                        Row(mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.min,
-                          children: [
-                            MyButton(text: "SUBMIT", onPressed: (){
-                              if (customerNumberController.text.isEmpty || customerNameController.text.isEmpty || _commentController.text.isEmpty || _selectedStatusValue==widget.flat.flatStatus) {
-                                DialogManager.showErrorDialog(context, 'Error', 'Please fill new state, customer name, number & comment.');
-                              } else {
-                                //Navigator.of(context).pop();
-                                _updateFlatDetails();
-                              }
-                            }),
-                          ],
+                        FadeInAnimation(delay: 2.4, direction: "down",
+                          child: Row(mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.min,
+                            children: [
+                              MyButton(text: "SUBMIT", onPressed: (){
+                                if (customerNumberController.text.isEmpty || customerNameController.text.isEmpty || _commentController.text.isEmpty || _selectedStatusValue==widget.flat.flatStatus) {
+                                  DialogManager.showErrorDialog(context, 'Error', 'Please fill new state, customer name, number & comment.');
+                                } else {
+                                  //Navigator.of(context).pop();
+                                  _updateFlatDetails();
+                                }
+                              }),
+                            ],
+                          ),
                         )
                       ],
                     ),

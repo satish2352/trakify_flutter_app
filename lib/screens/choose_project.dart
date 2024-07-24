@@ -5,6 +5,7 @@ import 'package:trakify/app/network.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/project_class.dart';
+import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
 import 'package:trakify/ui_components/navbar.dart';
 import 'package:trakify/ui_components/project_card.dart';
@@ -170,7 +171,9 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
                                     controller: scrollController,
                                     itemCount: projects.length,
                                     itemBuilder: (context, index) {
-                                      return Center(child: ProjectCardWidget(project: projects[index]));
+                                      return Center(child: FadeInAnimation(delay: 0.4*index, direction: "up",
+                                          child: ProjectCardWidget(project: projects[index]))
+                                      );
                                     },
                                   ),
                                 ),

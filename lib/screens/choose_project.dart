@@ -103,11 +103,9 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
         key: scaffoldKey,
         appBar: AppBar(
           elevation: 4,
-          title: Image.asset(
-            imageString,
-            fit: BoxFit.fitWidth,
-            width: MediaQuery.of(context).size.width * 0.2,
-            height: MediaQuery.of(context).size.height * 0.2,
+          title: Image.asset(imageString,
+            width: MediaQuery.of(context).size.width * 0.3,
+            height: MediaQuery.of(context).size.height * 0.3,
           ),
           leading: IconButton(
             onPressed: () {

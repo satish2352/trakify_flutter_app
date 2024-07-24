@@ -5,6 +5,7 @@ import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/history_item.dart';
 import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/button.dart';
+import 'package:trakify/ui_components/custom_appbar.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
 import 'package:trakify/ui_components/history_custom_accordion_item.dart';
 import 'package:trakify/ui_components/loading_indicator.dart';
@@ -20,6 +21,7 @@ class FlatHistory extends StatefulWidget {
 }
 
 class FlatHistoryState extends State<FlatHistory> {
+
   late final String flatId;
   bool _isLoading = false;
   late List<HistoryItem> historyItems = [], filteredHistoryItems = [];
@@ -27,6 +29,7 @@ class FlatHistoryState extends State<FlatHistory> {
   DateTime _selectedDate = DateTime.now();
   DateTime? _selectedStartDate, _selectedEndDate;
   final dateFormat = DateFormat('dd MMMM yyyy, hh:mm a');
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -63,34 +66,8 @@ class FlatHistoryState extends State<FlatHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 4,
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
-          "History - ${widget.flatNumber}",
-          style: const TextStyle(
-              fontFamily: 'OpenSans', fontSize: 25, color: Colors.white),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back_outlined)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu_outlined),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return const NavBar();
-                },
-              );
-            },
-          ),
-        ],
-      ),
+      drawer: const Drawer(child: NavBar(),),
+      appBar: CustomAppBar(scaffoldKey: scaffoldKey),
       body: _isLoading
           ? LoadingIndicator.build()
           : RefreshIndicator.adaptive(

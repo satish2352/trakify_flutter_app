@@ -7,6 +7,7 @@ import 'package:trakify/data/project_class.dart';
 import 'package:trakify/screens/flat_details.dart';
 import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/colors.dart';
+import 'package:trakify/ui_components/custom_appbar.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
 import 'package:trakify/ui_components/grid_item.dart';
 import 'package:trakify/ui_components/navbar.dart';
@@ -353,29 +354,10 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
 
   @override
   Widget build(BuildContext context) {
-    String imageString = Theme
-        .of(context)
-        .brightness == Brightness.light
-        ? 'assets/images/logo_blue.png'
-        : 'assets/images/logo_white.png';
-    return Scaffold(key: scaffoldKey, endDrawer: const Drawer(child: NavBar(),),
-      appBar: AppBar(
-        elevation: 4,
-        title: Image.asset(imageString, fit: BoxFit.fitWidth,
-          width: MediaQuery.of(context).size.width * 0.2,
-          height: MediaQuery.of(context).size.height * 0.2,
-        ),
-        leading: IconButton(
-          onPressed: () {Navigator.pop(context);},
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu_outlined),
-            onPressed: () {scaffoldKey.currentState!.openEndDrawer();},
-          ),
-        ],
-      ),
+    return Scaffold(
+      key: scaffoldKey,
+      endDrawer: const Drawer(child: NavBar(),),
+      appBar: CustomAppBar(scaffoldKey: scaffoldKey),
       body: Stack(
         children: [
           Container(

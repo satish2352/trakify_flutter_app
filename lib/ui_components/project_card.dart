@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/project_class.dart';
 import 'package:trakify/screens/project_info.dart';
-import 'package:trakify/screens/wings.dart';
 import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/text.dart';
 
@@ -21,7 +20,6 @@ class ProjectCardWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: (){
           Navigator.push(context, CustomPageRoute(
-              //nextPage: WingScreen(selectedProjectId: project.id), direction: 1)
               nextPage: ProjectInfo(project: project), direction: 1)
           );
         },
@@ -38,8 +36,8 @@ class ProjectCardWidget extends StatelessWidget {
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min,
                     children: [
                       MySimpleText(text: project.name, size: 20, bold: true, color: Colors.black,),
-                      MySimpleText(text: project.type, size: 14,),
-                      MySimpleText(text: "${project.city}, ${project.state}", size: 14),
+                      MySimpleText(text: project.type, size: 14, color: Colors.black,),
+                      MySimpleText(text: "${project.city}, ${project.state}", size: 14,color: Colors.black,),
                       Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           columnData(MyColor.gridGreen, project.bookedFlats),
@@ -51,7 +49,7 @@ class ProjectCardWidget extends StatelessWidget {
                             children: [
                               const MySimpleText(text: "Flats", size: 15, color: Colors.blue, bold: true,),
                               const SizedBox(width: 5,),
-                              MySimpleText(text: project.totalFlats.toString(), size: 15,),
+                              MySimpleText(text: project.totalFlats.toString(), size: 15,color: Colors.black,),
                             ],
                           ),
                         ],
@@ -86,7 +84,7 @@ class ProjectCardWidget extends StatelessWidget {
           Container(height: 15, width: 15,
             decoration: BoxDecoration(shape: BoxShape.circle, color: color),
           ),
-          MySimpleText(text: count.toString(), size: 12),
+          MySimpleText(text: count.toString(), size: 12,color: Colors.black,),
         ],
       ),
     );

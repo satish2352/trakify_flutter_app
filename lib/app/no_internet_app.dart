@@ -20,13 +20,6 @@ class NoInternetApp extends StatelessWidget {
         primaryColor: Colors.blueAccent,
         primarySwatch: Colors.blue,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColorDark: Colors.white,
-        primaryColor: Colors.blueAccent,
-        primaryColorLight: Colors.grey[300],
-        primarySwatch: Colors.blue,
-      ),
       home: Scaffold(
         body: SafeArea(
           child: Center(
@@ -37,7 +30,7 @@ class NoInternetApp extends StatelessWidget {
                   const FadeInAnimation(
                     direction: 'down',
                     delay: 0.6,
-                    child: MyHeadingText(text: "T R A C I F Y"),
+                    child: MyHeadingText(text: "T R A K I F Y"),
                   ),
                   const SizedBox(height: 20),
                   InfiniteAnimation(

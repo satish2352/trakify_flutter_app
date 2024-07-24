@@ -84,14 +84,10 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    String imageString = Theme.of(context).brightness == Brightness.light
-        ? 'assets/images/logo_blue.png'
-        : 'assets/images/logo_white.png';
 
     return WillPopScope(
       onWillPop: () async {
         if (scaffoldKey.currentState!.isEndDrawerOpen) {
-          scaffoldKey.currentState!.openEndDrawer();
           Navigator.pop(context);
           return false;
         } else {
@@ -103,14 +99,16 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
         key: scaffoldKey,
         appBar: AppBar(
           elevation: 4,
-          title: Image.asset(imageString,
-            width: MediaQuery.of(context).size.width * 0.3,
-            height: MediaQuery.of(context).size.height * 0.3,
+          title: Image.asset(
+            'assets/images/logo_blue.png',
+            width: MediaQuery.sizeOf(context).width*0.3,
+            fit: BoxFit.fill,
           ),
           leading: IconButton(
+            padding: EdgeInsets.zero,
             onPressed: () {
               if (scaffoldKey.currentState!.isEndDrawerOpen) {
-                scaffoldKey.currentState!.openEndDrawer();
+                Navigator.pop(context);
               } else {
                 _exitApp();
               }
@@ -119,6 +117,7 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
           ),
           actions: [
             IconButton(
+              padding: EdgeInsets.zero,
               icon: const Icon(Icons.menu_outlined),
               onPressed: () {
                 scaffoldKey.currentState!.openEndDrawer();

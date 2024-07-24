@@ -15,15 +15,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imageString = Theme.of(context)
-        .brightness == Brightness.light ? 'assets/images/logo_blue.png' : 'assets/images/logo_white.png';
+
     return AppBar(
       elevation: 4,
-      title: Image.asset(imageString,
-        width: MediaQuery.of(context).size.width * 0.3,
-        height: MediaQuery.of(context).size.height * 0.3,
+      title://const Text("Trakify"),
+      Image.asset(
+        'assets/images/logo_blue.png',
+        width: MediaQuery.sizeOf(context).width*0.3,
+        fit: BoxFit.fill,
       ),
       leading: IconButton(
+        padding: EdgeInsets.zero,
         onPressed: () {
           if (scaffoldKey.currentState!.isEndDrawerOpen) {
             scaffoldKey.currentState!.openEndDrawer();
@@ -39,6 +41,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
+          padding: EdgeInsets.zero,
           icon: const Icon(Icons.menu_outlined),
           onPressed: () {
             scaffoldKey.currentState!.openEndDrawer();

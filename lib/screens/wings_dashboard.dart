@@ -13,7 +13,6 @@ import 'package:trakify/ui_components/grid_item.dart';
 import 'package:trakify/ui_components/navbar.dart';
 import 'package:trakify/ui_components/text.dart';
 
-
 class WingsDashboardPage extends StatefulWidget {
   final Project project;
   final String selectedWingId, wingName;
@@ -193,345 +192,189 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
     }
   }
 
-  /*
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(strokeWidth: 2, color: Colors.blue,
-      onRefresh: _fetchFlats,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 4,
-          backgroundColor: Theme.of(context).primaryColor,
-          title: Text(widget.wingName, style: const TextStyle(fontSize: 25, color: Colors.white),),
-          iconTheme: const IconThemeData(color: Colors.white),
-          leading: IconButton(onPressed: (){Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_back_outlined)),
-          actions: [
-            IconButton(onPressed: _showHelp, icon: const Icon(Icons.info_outline_rounded),),
-            IconButton(icon: const Icon(Icons.menu_outlined), onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return const NavBar();
-                },
-              );},),
-          ],
-        ),
-        body: _isLoading ? LoadingIndicator.build() :SafeArea(
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(padding: const EdgeInsets.all(10.0),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                children: [const SizedBox(height: 20),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: FadeInAnimation(delay: 1, direction: 'right',
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const MySimpleText(text: "SEARCH", size: 12, color: Colors.grey,),
-                              MaterialTextFormField(
-                                hintText: 'Number',
-                                suffixIcon: Icons.search,
-                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                controller: searchController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchText = value;
-                                  });
-                                  filterFlats(searchText, dropdownValue);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10,),
-                      FadeInAnimation(delay: 1, direction: 'left',
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const MySimpleText(text: "STATUS", size: 12, color: Colors.grey,),
-                            MyDropdown(
-                              items: flatStatus,
-                              value: flatStatus.first,
-                              hint: "STATUS",
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                    dropdownValue = newValue!;
-                                  },
-                                );
-                                filterFlats(searchText, dropdownValue);
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  const MySimpleText(text: "FLATS", size: 12, color: Colors.grey),
-                  Material(elevation: 4, borderRadius: BorderRadius.circular(12.0), shadowColor: Colors.lightBlue,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Padding(padding: const EdgeInsets.only(left: 4.0, bottom: 4.0),
-                          child: Column(
-                            children:[
-                              for (var floorNumber in flatItems.map((flat) => flat.floorNumber).toSet().toList())
-                                MySimpleText(text: getUserReadableFloorLabel(floorNumber), size: 12,),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 20,),
-                        Expanded(
-                          child: SizedBox(height: MediaQuery.of(context).size.height * 0.6,
-                            child: filteredFlats.isEmpty ? const Center(child: MySimpleText(text: 'No flats available', size: 18,),) : ListView.builder(
-                              itemCount: filteredFlats.map((flat) => flat.floorNumber).toSet().length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final floorNumber = filteredFlats.map((flat) => flat.floorNumber).toSet().toList()[index];
-                                final flatsForFloor = filteredFlats.where((flat) => flat.floorNumber == floorNumber).toList();
-                                return Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                      child: AppearAnimation(
-                                        child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            const SizedBox(width: 60, child: Divider(color: Colors.grey,)),
-                                            Padding(padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                                              child: Text(getUserReadableFloorLabel(floorNumber),
-                                                style: const TextStyle(fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 60, child: Divider(color: Colors.grey,)),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    GridView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 4, crossAxisSpacing: 4.0, mainAxisSpacing: 4.0,
-                                      ),
-                                      itemCount: flatsForFloor.length,
-                                      itemBuilder: (context, flatIndex) {
-                                        return GridItem(
-                                          flat: flatsForFloor[flatIndex],
-                                          onTap: () {
-                                            NetworkUtil.checkConnectionAndProceed(context, () {
-                                              Navigator.push(context, CustomPageRoute(nextPage: UpdateFlat(flatId: flatsForFloor[flatIndex].id, floorId: flatsForFloor[flatIndex].floorId), direction: 1));
-                                            });
-                                          },
-                                        );
-                                        },
-                                    ),
-                                  ],
-                                );
-                                },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-  */
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       endDrawer: const Drawer(child: NavBar(),),
       appBar: CustomAppBar(scaffoldKey: scaffoldKey),
-      body: Stack(
-        children: [
-          Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height * 0.5,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/wings_dashboard_bg.jpg'),
-                fit: BoxFit.fill,
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.5,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/wings_dashboard_bg.jpg'),
+                  fit: BoxFit.fill,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
               ),
             ),
-          ),
-          RefreshIndicator(
-            strokeWidth: 2,
-            color: Colors.blue,
-            onRefresh: _fetchFlats,
-            child: DraggableScrollableSheet(
-              initialChildSize: 0.6,
-              minChildSize: 0.6,
-              maxChildSize: 1.0,
-              expand: true,
-              builder: (BuildContext context,
-                  ScrollController scrollController) {
-                return Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+            RefreshIndicator(
+              strokeWidth: 2,
+              color: Colors.blue,
+              onRefresh: _fetchFlats,
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.6,
+                minChildSize: 0.6,
+                maxChildSize: 1.0,
+                expand: true,
+                builder: (BuildContext context,
+                    ScrollController scrollController) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
                     ),
-                  ),
-                  child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                        strokeWidth: 2,
-                      ),
-                    ],
-                  ) : ListView(
-                    controller: scrollController,
-                    children: [
-                      MyHeadingText(
-                          text: "${widget.project.name}\n${widget.wingName}", color: Colors.black),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.05,
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.05,
-                            child: Image.asset("assets/images/building.png"),
-                          ),
-                          const SizedBox(width: 10),
-                          MySimpleText(text: widget.project.type, size: 14),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.05,
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.05,
-                            child: Image.asset("assets/images/location.png"),
-                          ),
-                          const SizedBox(width: 10),
-                          MySimpleText(text: "${widget.project.city}, ${widget
-                              .project.state}", size: 14),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      const Center(child: MySubHeadingText(text: "SELECT FLAT", color: Colors.black)),
-                      const SizedBox(height: 20),
-                      //add component here
-                      SizedBox(height: MediaQuery.sizeOf(context).height * 0.6,
-                        child: Expanded(
-                          child: SizedBox(height: MediaQuery.of(context).size.height * 0.6,
-                            child: filteredFlats.isEmpty ? const MySimpleText(text: 'No flats available', size: 18,) : ListView.builder(
-                              itemCount: filteredFlats.map((flat) => flat.floorNumber).toSet().length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final floorNumber = filteredFlats.map((flat) => flat.floorNumber).toSet().toList()[index];
-                                final flatsForFloor = filteredFlats.where((flat) => flat.floorNumber == floorNumber).toList();
-                                return Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                      child: AppearAnimation(
-                                        child: Row(mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Container(padding: const EdgeInsets.symmetric(vertical: 5),
-                                              width: MediaQuery.sizeOf(context).width*0.8,
-                                              decoration: const BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [Colors.blue, Colors.white],
-                                                  begin: Alignment.centerLeft,
-                                                  end: Alignment.centerRight,
+                    child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          strokeWidth: 2,
+                        ),
+                      ],
+                    ) : ListView(
+                      controller: scrollController,
+                      children: [
+                        MyHeadingText(
+                            text: "${widget.project.name}\n${widget.wingName}", color: Colors.black),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.05,
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.05,
+                              child: Image.asset("assets/images/building.png"),
+                            ),
+                            const SizedBox(width: 10),
+                            MySimpleText(text: widget.project.type, size: 14),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.05,
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.05,
+                              child: Image.asset("assets/images/location.png"),
+                            ),
+                            const SizedBox(width: 10),
+                            MySimpleText(text: "${widget.project.city}, ${widget
+                                .project.state}", size: 14),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        const Center(child: MySubHeadingText(text: "SELECT FLAT", color: Colors.black)),
+                        const SizedBox(height: 20),
+                        //add component here
+                        SizedBox(height: MediaQuery.sizeOf(context).height * 0.6,
+                          child: Expanded(
+                            child: SizedBox(height: MediaQuery.of(context).size.height * 0.6,
+                              child: filteredFlats.isEmpty ? const MySimpleText(text: 'No flats available', size: 18,) : ListView.builder(
+                                itemCount: filteredFlats.map((flat) => flat.floorNumber).toSet().length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final floorNumber = filteredFlats.map((flat) => flat.floorNumber).toSet().toList()[index];
+                                  final flatsForFloor = filteredFlats.where((flat) => flat.floorNumber == floorNumber).toList();
+                                  return Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                        child: AppearAnimation(
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Container(padding: const EdgeInsets.symmetric(vertical: 5),
+                                                width: MediaQuery.sizeOf(context).width*0.8,
+                                                decoration: const BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [Colors.blue, Colors.white],
+                                                    begin: Alignment.centerLeft,
+                                                    end: Alignment.centerRight,
+                                                  ),
+                                                  borderRadius: BorderRadius.all(Radius.circular(10)),
                                                 ),
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                                                child: Text(
-                                                  getUserReadableFloorLabel(floorNumber),
-                                                  style: const TextStyle(
-                                                    fontFamily: 'OpenSans',
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                                                  child: Text(
+                                                    getUserReadableFloorLabel(floorNumber),
+                                                    style: const TextStyle(
+                                                      fontFamily: 'OpenSans',
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            )
-                                          ],
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    GridView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 4, crossAxisSpacing: 3.0, mainAxisSpacing: 3.0,
+                                      GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4, crossAxisSpacing: 3.0, mainAxisSpacing: 3.0,
+                                        ),
+                                        itemCount: flatsForFloor.length,
+                                        itemBuilder: (context, flatIndex) {
+                                          return GridItem(
+                                            flat: flatsForFloor[flatIndex],
+                                            onTap: () {
+                                              NetworkUtil.checkConnectionAndProceed(context, () {
+                                                Navigator.push(context, CustomPageRoute(nextPage: FlatDetails(flatId: flatsForFloor[flatIndex].id, floorId: flatsForFloor[flatIndex].floorId, project: widget.project, wingName: widget.wingName, floorNumber: getUserReadableFloorLabel(flatsForFloor[flatIndex].floorNumber),), direction: 1));
+                                              });
+                                            },
+                                          );
+                                        },
                                       ),
-                                      itemCount: flatsForFloor.length,
-                                      itemBuilder: (context, flatIndex) {
-                                        return GridItem(
-                                          flat: flatsForFloor[flatIndex],
-                                          onTap: () {
-                                            NetworkUtil.checkConnectionAndProceed(context, () {
-                                              Navigator.push(context, CustomPageRoute(nextPage: FlatDetails(flatId: flatsForFloor[flatIndex].id, floorId: flatsForFloor[flatIndex].floorId, project: widget.project, wingName: widget.wingName, floorNumber: getUserReadableFloorLabel(flatsForFloor[flatIndex].floorNumber),), direction: 1));
-                                            });
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Positioned(bottom: -5,
-            child: Container(color: Colors.white, width: MediaQuery.sizeOf(context).width,
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  legendColumn("AVAILABLE", MyColor.gridYellow),
-                  legendColumn("BOOKED", MyColor.gridGreen),
-                  legendColumn("ON HOLD", MyColor.gridBlue),
-                  legendColumn("BLOCKED", MyColor.gridRed),
-                ],
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
-          ),
-        ],
+            Positioned(bottom: -5,
+              child: Container(color: Colors.white, width: MediaQuery.sizeOf(context).width,
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    legendColumn("AVAILABLE", MyColor.gridYellow),
+                    legendColumn("BOOKED", MyColor.gridGreen),
+                    legendColumn("ON HOLD", MyColor.gridBlue),
+                    legendColumn("BLOCKED", MyColor.gridRed),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+
 }

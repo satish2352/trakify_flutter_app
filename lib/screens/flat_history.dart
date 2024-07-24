@@ -69,91 +69,93 @@ class FlatHistoryState extends State<FlatHistory> {
     return Scaffold(key: scaffoldKey,
       endDrawer: const Drawer(child: NavBar(),),
       appBar: CustomAppBar(scaffoldKey: scaffoldKey),
-      body: _isLoading
-          ? LoadingIndicator.build()
-          : RefreshIndicator.adaptive(
-              strokeWidth: 2,
-              color: Colors.blue,
-              onRefresh: _initializeData,
-              child: Column( crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(padding: const EdgeInsets.all(12.0),
-                    child: MyTextButton(text: _selectedStartDate != null
-                        ? DateFormat('dd-MM-yyyy').format(_selectedStartDate!)
-                        : 'Choose start date',
-                      onTap: () async {
-                      final pickedDate = await _selectDate(context);
-                      if (pickedDate != null) {
-                        setState(() {
-                          _selectedStartDate = pickedDate;
-                        });
-                      }
-                    },),
-                  ),
-                  Padding(padding: const EdgeInsets.all(12.0),
-                    child: MyTextButton(
-                      text: _selectedEndDate != null
-                          ? DateFormat('dd-MM-yyyy')
-                          .format(_selectedEndDate!)
-                          : 'Choose End date',
-                      onTap: () async {
+      body: SafeArea(
+        child: _isLoading
+            ? LoadingIndicator.build()
+            : RefreshIndicator.adaptive(
+                strokeWidth: 2,
+                color: Colors.blue,
+                onRefresh: _initializeData,
+                child: Column( crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(padding: const EdgeInsets.all(12.0),
+                      child: MyTextButton(text: _selectedStartDate != null
+                          ? DateFormat('dd-MM-yyyy').format(_selectedStartDate!)
+                          : 'Choose start date',
+                        onTap: () async {
                         final pickedDate = await _selectDate(context);
                         if (pickedDate != null) {
                           setState(() {
-                            _selectedEndDate = pickedDate;
+                            _selectedStartDate = pickedDate;
                           });
                         }
-                      },
+                      },),
                     ),
-                  ),
-                  Padding(padding: const EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MyButton(text: 'Search', onPressed: _filterHistoryItems),
-                        MyButton(text: 'Sort', onPressed: (){
-                          setState(() {
-                            _ascendingOrder = !_ascendingOrder;
-                            filteredHistoryItems.sort((a, b) => _ascendingOrder
-                                ? a.updatedOn.compareTo(b.updatedOn)
-                                : b.updatedOn.compareTo(a.updatedOn));
-                          });
-                        }),
-                        MyButton(text: 'Reset', onPressed: _initializeData),
-                      ],
+                    Padding(padding: const EdgeInsets.all(12.0),
+                      child: MyTextButton(
+                        text: _selectedEndDate != null
+                            ? DateFormat('dd-MM-yyyy')
+                            .format(_selectedEndDate!)
+                            : 'Choose End date',
+                        onTap: () async {
+                          final pickedDate = await _selectDate(context);
+                          if (pickedDate != null) {
+                            setState(() {
+                              _selectedEndDate = pickedDate;
+                            });
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                    child: filteredHistoryItems.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No data found',
-                              style: TextStyle(
-                                fontFamily: 'OpenSans',
-                                fontSize: 16,
+                    Padding(padding: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          MyButton(text: 'Search', onPressed: _filterHistoryItems),
+                          MyButton(text: 'Sort', onPressed: (){
+                            setState(() {
+                              _ascendingOrder = !_ascendingOrder;
+                              filteredHistoryItems.sort((a, b) => _ascendingOrder
+                                  ? a.updatedOn.compareTo(b.updatedOn)
+                                  : b.updatedOn.compareTo(a.updatedOn));
+                            });
+                          }),
+                          MyButton(text: 'Reset', onPressed: _initializeData),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: filteredHistoryItems.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'No data found',
+                                style: TextStyle(
+                                  fontFamily: 'OpenSans',
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                          )
-                        : ListView(
-                            padding: const EdgeInsets.all(10),
-                            children: List.generate(
-                              filteredHistoryItems.length,
-                              (index) => FadeInAnimation(
-                                delay: 0.4,
-                                direction: 'up',
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CustomAccordion(historyItem: filteredHistoryItems[index]),
+                            )
+                          : ListView(
+                              padding: const EdgeInsets.all(10),
+                              children: List.generate(
+                                filteredHistoryItems.length,
+                                (index) => FadeInAnimation(
+                                  delay: 0.4,
+                                  direction: 'up',
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CustomAccordion(historyItem: filteredHistoryItems[index]),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                  ),
-                ],
-              )),
+                    ),
+                  ],
+                )),
+      ),
     );
   }
 

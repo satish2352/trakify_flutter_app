@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:trakify/app/no_internet_app.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/screens/splash_screen.dart';
@@ -7,11 +8,15 @@ import 'package:trakify/screens/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult == ConnectivityResult.none) {
-    runApp(const NoInternetApp());
-  } else {
-    runApp(const MyApp());
-  }
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) {
+    if (connectivityResult == ConnectivityResult.none) {
+      runApp(const NoInternetApp());
+    } else {
+      runApp(const MyApp());
+    }
+  });
 }
 
 class MyApp extends StatelessWidget {

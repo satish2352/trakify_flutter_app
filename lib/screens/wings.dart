@@ -5,11 +5,9 @@ import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/project_class.dart';
 import 'package:trakify/data/wing_class.dart';
 import 'package:trakify/screens/wings_dashboard.dart';
-import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/custom_appbar.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
-import 'package:trakify/ui_components/loading_indicator.dart';
 import 'package:trakify/ui_components/navbar.dart';
 import 'package:trakify/ui_components/text.dart';
 
@@ -93,99 +91,101 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
       key: scaffoldKey,
       endDrawer: const Drawer(child: NavBar(),),
       appBar: CustomAppBar(scaffoldKey: scaffoldKey),
-      body: Stack(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/wings_bg.png'),
-                fit: BoxFit.fill,
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/wings_bg.png'),
+                  fit: BoxFit.fill,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
               ),
             ),
-          ),
-          RefreshIndicator(
-            strokeWidth: 2,
-            color: Colors.blue,
-            onRefresh: _fetchWings,
-            child: DraggableScrollableSheet(
-              initialChildSize: 0.6,
-              minChildSize: 0.6,
-              maxChildSize: 1.0,
-              expand: true,
-              builder: (BuildContext context, ScrollController scrollController) {
-                return Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+            RefreshIndicator(
+              strokeWidth: 2,
+              color: Colors.blue,
+              onRefresh: _fetchWings,
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.6,
+                minChildSize: 0.6,
+                maxChildSize: 1.0,
+                expand: true,
+                builder: (BuildContext context, ScrollController scrollController) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
                     ),
-                  ),
-                  child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                        strokeWidth: 2,
-                      ),
-                    ],
-                  ) : ListView(
-                    controller: scrollController,
-                    children: [
-                      MyHeadingText(text: widget.project.name, color: Colors.black),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.05,
-                            height: MediaQuery.of(context).size.width * 0.05,
-                            child: Image.asset("assets/images/building.png"),
-                          ),
-                          const SizedBox(width: 10),
-                          MySimpleText(text: widget.project.type, size: 14),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.05,
-                            height: MediaQuery.of(context).size.width * 0.05,
-                            child: Image.asset("assets/images/location.png"),
-                          ),
-                          const SizedBox(width: 10),
-                          MySimpleText(text: "${widget.project.city}, ${widget.project.state}", size: 14),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      const Center(child: MySubHeadingText(text: "SELECT WING", color: Colors.black)),
-                      const SizedBox(height: 20),
-                      //...wings.map(_wingItem),
-                      SizedBox(height: MediaQuery.sizeOf(context).height*0.6,
-                        child: GridView.builder(
-                          controller: scrollController,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 5,
-                            mainAxisSpacing: 2,
-                            childAspectRatio: 1.0,
-                          ),
-                          itemCount: wings.length,
-                          itemBuilder: (context, index) {
-                            return _wingItem(wings[index]);
-                          },
+                    child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          strokeWidth: 2,
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ) : ListView(
+                      controller: scrollController,
+                      children: [
+                        MyHeadingText(text: widget.project.name, color: Colors.black),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              height: MediaQuery.of(context).size.width * 0.05,
+                              child: Image.asset("assets/images/building.png"),
+                            ),
+                            const SizedBox(width: 10),
+                            MySimpleText(text: widget.project.type, size: 14),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              height: MediaQuery.of(context).size.width * 0.05,
+                              child: Image.asset("assets/images/location.png"),
+                            ),
+                            const SizedBox(width: 10),
+                            MySimpleText(text: "${widget.project.city}, ${widget.project.state}", size: 14),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        const Center(child: MySubHeadingText(text: "SELECT WING", color: Colors.black)),
+                        const SizedBox(height: 20),
+                        //...wings.map(_wingItem),
+                        SizedBox(height: MediaQuery.sizeOf(context).height*0.6,
+                          child: GridView.builder(
+                            controller: scrollController,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 2,
+                              childAspectRatio: 1.0,
+                            ),
+                            itemCount: wings.length,
+                            itemBuilder: (context, index) {
+                              return _wingItem(wings[index]);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

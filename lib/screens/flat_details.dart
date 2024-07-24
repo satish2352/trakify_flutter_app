@@ -25,7 +25,7 @@ class FlatDetails extends StatefulWidget {
   FlatDetailsState createState() => FlatDetailsState();
 }
 
-class FlatDetailsState extends State<FlatDetails> {
+class FlatDetailsState extends State<FlatDetails> with RouteAware {
 
   String userId = '';
   late Flat flat;
@@ -41,6 +41,12 @@ class FlatDetailsState extends State<FlatDetails> {
     NetworkUtil.checkConnectionAndProceed(context, () {
       _initializeData();
     });
+  }
+
+  @override
+  void didPopNext() {
+    // Called when the current route has been popped off, and the user returned to this route.
+    _initializeData();
   }
 
   Future<void> _initializeData() async {
@@ -87,124 +93,126 @@ class FlatDetailsState extends State<FlatDetails> {
   Widget build(BuildContext context) {
     return Scaffold(key: scaffoldKey, endDrawer: const Drawer(child: NavBar(),),
       appBar: CustomAppBar(scaffoldKey: scaffoldKey),
-      body: Stack(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/flat_details_bg.png'),
-                fit: BoxFit.fill,
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/flat_details_bg.png'),
+                  fit: BoxFit.fill,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
               ),
             ),
-          ),
-          RefreshIndicator(
-            strokeWidth: 2,
-            color: Colors.blue,
-            onRefresh: _fetchFlat,
-            child: DraggableScrollableSheet(
-              initialChildSize: 0.6,
-              minChildSize: 0.6,
-              maxChildSize: 1.0,
-              expand: true,
-              builder: (BuildContext context,
-                  ScrollController scrollController) {
-                return Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                        strokeWidth: 2,
+            RefreshIndicator(
+              strokeWidth: 2,
+              color: Colors.blue,
+              onRefresh: _fetchFlat,
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.6,
+                minChildSize: 0.6,
+                maxChildSize: 1.0,
+                expand: true,
+                builder: (BuildContext context,
+                    ScrollController scrollController) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
                       ),
-                    ],
-                  ) : ListView(
-                    controller: scrollController,
-                    children: [
-                      Row(mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          imageContainer("assets/images/project_details_bg.png"),
-                          imageContainer("assets/images/wings_bg.png"),
-                          imageContainer("assets/images/wings_dashboard_bg.png"),
-                          imageContainer("assets/images/flat_details_bg.png"),
-                      ],),
-                      const SizedBox(height: 10),
-                      MyHeadingText(text: widget.project.name, color: Colors.black),
-                      //const SizedBox(height: 5),
-                      Container(padding: const EdgeInsets.symmetric(vertical: 5),
-                        width: MediaQuery.sizeOf(context).width*0.8,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.blue, Colors.white],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          strokeWidth: 2,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                          child: Text(
-                            "Wing ${widget.wingName} | ${widget.floorNumber} | Flat No. ${flat.flatNumber}",
-                            style: const TextStyle(
-                              fontFamily: 'OpenSans',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                      ],
+                    ) : ListView(
+                      controller: scrollController,
+                      children: [
+                        Row(mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            imageContainer("assets/images/project_details_bg.png"),
+                            imageContainer("assets/images/wings_bg.png"),
+                            imageContainer("assets/images/wings_dashboard_bg.png"),
+                            imageContainer("assets/images/flat_details_bg.png"),
+                        ],),
+                        const SizedBox(height: 10),
+                        MyHeadingText(text: widget.project.name, color: Colors.black),
+                        //const SizedBox(height: 5),
+                        Container(padding: const EdgeInsets.symmetric(vertical: 5),
+                          width: MediaQuery.sizeOf(context).width*0.8,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.blue, Colors.white],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                            child: Text(
+                              "Wing ${widget.wingName} | ${widget.floorNumber} | Flat No. ${flat.flatNumber}",
+                              style: const TextStyle(
+                                fontFamily: 'OpenSans',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.05,
-                            height: MediaQuery.of(context).size.width * 0.05,
-                            child: Image.asset("assets/images/location.png"),
-                          ),
-                          const SizedBox(width: 10),
-                          MySimpleText(text: "${widget.project.city}, ${widget
-                              .project.state}", size: 14),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.currency_rupee, size: 20,),
-                          MyHeadingText(text: formatPrice(flat.price), color: Colors.black),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      const MySimpleText(text: "Description", size: 16, color: Colors.black, bold: true,),
-                      MySimpleText(text: "A ${flat.bhk} BHK flat,\nspread across ${flat.area} square foot." , size: 16, color: Colors.black,),
-                      const SizedBox(height: 20),
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, mainAxisSize: MainAxisSize.min,
-                        children: [
-                          MyButton(text: flat.flatStatus, onPressed: (){
-                            Navigator.push(context, CustomPageRoute(nextPage: UpdateFlat(flat: flat, project: widget.project, wingName: widget.wingName, floorNumber: widget.floorNumber, floorId: widget.floorId,), direction: 0),);
-                          }),
-                          MyCardIconButton(onPressed: (){
-                            Navigator.push(context, CustomPageRoute(nextPage: FlatHistory(flatId: flat.id, flatNumber: flat.flatNumber,), direction: 0),);
-                          }, icon: Icons.history),
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              },
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              height: MediaQuery.of(context).size.width * 0.05,
+                              child: Image.asset("assets/images/location.png"),
+                            ),
+                            const SizedBox(width: 10),
+                            MySimpleText(text: "${widget.project.city}, ${widget
+                                .project.state}", size: 14),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            const Icon(Icons.currency_rupee, size: 20,),
+                            MyHeadingText(text: formatPrice(flat.price), color: Colors.black),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        const MySimpleText(text: "Description", size: 16, color: Colors.black, bold: true,),
+                        MySimpleText(text: "A ${flat.bhk} BHK flat,\nspread across ${flat.area} square foot." , size: 16, color: Colors.black,),
+                        const SizedBox(height: 20),
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, mainAxisSize: MainAxisSize.min,
+                          children: [
+                            MyButton(text: flat.flatStatus, onPressed: (){
+                              Navigator.push(context, CustomPageRoute(nextPage: UpdateFlat(flat: flat, project: widget.project, wingName: widget.wingName, floorNumber: widget.floorNumber, floorId: widget.floorId,), direction: 0),);
+                            }),
+                            MyCardIconButton(onPressed: (){
+                              Navigator.push(context, CustomPageRoute(nextPage: FlatHistory(flatId: flat.id, flatNumber: flat.flatNumber,), direction: 0),);
+                            }, icon: Icons.history),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

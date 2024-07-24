@@ -126,71 +126,73 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
           ],
         ),
         endDrawer: const Drawer(child: NavBar(),),
-        body: Stack(
-          children: [
-            Container(
-              height: MediaQuery.sizeOf(context).height*0.5,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/choose_project_bg.png'),
-                  fit: BoxFit.fill,
-                ),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Container(
+                height: MediaQuery.sizeOf(context).height*0.5,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/choose_project_bg.png'),
+                    fit: BoxFit.fill,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
                 ),
               ),
-            ),
-            RefreshIndicator(strokeWidth: 2, color: Colors.blue, onRefresh: fetchProjects,
-              child: DraggableScrollableSheet(
-                initialChildSize: 0.6,
-                minChildSize: 0.6,
-                maxChildSize: 1.0,
-                expand: true,
-                builder: (BuildContext context, ScrollController scrollController) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+              RefreshIndicator(strokeWidth: 2, color: Colors.blue, onRefresh: fetchProjects,
+                child: DraggableScrollableSheet(
+                  initialChildSize: 0.6,
+                  minChildSize: 0.6,
+                  maxChildSize: 1.0,
+                  expand: true,
+                  builder: (BuildContext context, ScrollController scrollController) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                            padding: EdgeInsets.only(left: 10, top: 5, bottom: 8),
-                            child: MyHeadingText(
-                              text: "Project List",
-                              color: Colors.black,
-                            )),
-                        isLoading
-                            ? const Center(child: CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(Colors.blue),
-                                  strokeWidth: 2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                              padding: EdgeInsets.only(left: 10, top: 5, bottom: 8),
+                              child: MyHeadingText(
+                                text: "Project List",
+                                color: Colors.black,
+                              )),
+                          isLoading
+                              ? const Center(child: CircularProgressIndicator(
+                                    valueColor:
+                                        AlwaysStoppedAnimation<Color>(Colors.blue),
+                                    strokeWidth: 2,
+                                  ),
+                              )
+                              : Expanded(
+                                  child: ListView.builder(
+                                    controller: scrollController,
+                                    itemCount: projects.length,
+                                    itemBuilder: (context, index) {
+                                      return Center(
+                                          child: ProjectCardWidget(
+                                              project: projects[index]));
+                                    },
+                                  ),
                                 ),
-                            )
-                            : Expanded(
-                                child: ListView.builder(
-                                  controller: scrollController,
-                                  itemCount: projects.length,
-                                  itemBuilder: (context, index) {
-                                    return Center(
-                                        child: ProjectCardWidget(
-                                            project: projects[index]));
-                                  },
-                                ),
-                              ),
-                      ],
-                    ),
-                  );
-                },
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

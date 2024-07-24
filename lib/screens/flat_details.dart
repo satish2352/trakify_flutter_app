@@ -8,14 +8,9 @@ import 'package:trakify/data/flat_class.dart';
 import 'package:trakify/data/project_class.dart';
 import 'package:trakify/screens/flat_history.dart';
 import 'package:trakify/screens/update_flat.dart';
-import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/button.dart';
-import 'package:trakify/ui_components/colors.dart';
 import 'package:trakify/ui_components/custom_appbar.dart';
-import 'package:trakify/ui_components/details_item.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
-import 'package:trakify/ui_components/dropdown.dart';
-import 'package:trakify/ui_components/loading_indicator.dart';
 import 'package:trakify/ui_components/navbar.dart';
 import 'package:trakify/ui_components/text.dart';
 
@@ -74,7 +69,7 @@ class FlatDetailsState extends State<FlatDetails> {
         flat = result.data[0];
         //DialogManager.showInfoDialog(context, 'Info', f);
         flatStates = ['available', 'booked', 'blocked', 'hold'];
-        newState = flat!.flatStatus;
+        newState = flat.flatStatus;
       });
     } else {
       DialogManager.showInfoDialog(context, 'Failed to load data', "Please check your internet connection");
@@ -193,11 +188,14 @@ class FlatDetailsState extends State<FlatDetails> {
                       const MySimpleText(text: "Description", size: 16, color: Colors.black, bold: true,),
                       MySimpleText(text: "A ${flat.bhk} BHK flat,\nspread across ${flat.area} square foot." , size: 16, color: Colors.black,),
                       const SizedBox(height: 20),
-                      Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min,
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, mainAxisSize: MainAxisSize.min,
                         children: [
                           MyButton(text: flat.flatStatus, onPressed: (){
                             Navigator.push(context, CustomPageRoute(nextPage: UpdateFlat(flat: flat, project: widget.project, wingName: widget.wingName, floorNumber: widget.floorNumber, floorId: widget.floorId,), direction: 0),);
                           }),
+                          MyCardIconButton(onPressed: (){
+                            Navigator.push(context, CustomPageRoute(nextPage: FlatHistory(flatId: flat.id, flatNumber: flat.flatNumber,), direction: 0),);
+                          }, icon: Icons.history),
                         ],
                       )
                     ],

@@ -69,10 +69,10 @@ class MyCardIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(onPressed: onPressed,
-      icon: Icon(icon, color: MyColor.white, size: 30, shadows: const [
-        BoxShadow(color: MyColor.bluePrimary, spreadRadius: 10, blurRadius: 10, offset: Offset(0, 0),),
-      ],),
+      icon: Icon(icon, color: MyColor.white, size: 30,),
       style: ButtonStyle(
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+        backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
         elevation: WidgetStateProperty.all(4),
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(

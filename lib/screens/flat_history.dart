@@ -13,8 +13,7 @@ import 'package:trakify/ui_components/navbar.dart';
 
 class FlatHistory extends StatefulWidget {
   final String flatId, flatNumber;
-  const FlatHistory(
-      {super.key, required this.flatId, required this.flatNumber});
+  const FlatHistory({super.key, required this.flatId, required this.flatNumber});
 
   @override
   FlatHistoryState createState() => FlatHistoryState();
@@ -47,6 +46,8 @@ class FlatHistoryState extends State<FlatHistory> {
     await _fetchHistory();
     setState(() {
       _isLoading = false;
+      _selectedStartDate=null;
+      _selectedEndDate=null;
     });
   }
 
@@ -65,8 +66,8 @@ class FlatHistoryState extends State<FlatHistory> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const Drawer(child: NavBar(),),
+    return Scaffold(key: scaffoldKey,
+      endDrawer: const Drawer(child: NavBar(),),
       appBar: CustomAppBar(scaffoldKey: scaffoldKey),
       body: _isLoading
           ? LoadingIndicator.build()
@@ -173,13 +174,13 @@ class FlatHistoryState extends State<FlatHistory> {
 
   void _filterHistoryItems() {
     if (_selectedStartDate == null || _selectedEndDate == null) {
-      DialogManager.showInfoDialog(
+      DialogManager.showErrorDialog(
           context, 'Error', 'Please select both start and end dates.');
       return;
     }
 
     if (_selectedStartDate!.isAfter(_selectedEndDate!)) {
-      DialogManager.showInfoDialog(
+      DialogManager.showErrorDialog(
           context, 'Error', 'Start date cannot be after end date.');
       return;
     }

@@ -36,6 +36,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
   String searchText = '';
   final List<String> flatStatus = ['All', 'available', 'booked', 'hold', 'blocked'];
   bool _isLoading = false;
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -357,7 +358,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
         .brightness == Brightness.light
         ? 'assets/images/logo_blue.png'
         : 'assets/images/logo_white.png';
-    return Scaffold(
+    return Scaffold(key: scaffoldKey, endDrawer: const Drawer(child: NavBar(),),
       appBar: AppBar(
         elevation: 4,
         title: Image.asset(imageString, fit: BoxFit.fitWidth,
@@ -371,7 +372,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
         actions: [
           IconButton(
             icon: const Icon(Icons.menu_outlined),
-            onPressed: () {showBottomDrawer(context);},
+            onPressed: () {scaffoldKey.currentState!.openEndDrawer();},
           ),
         ],
       ),

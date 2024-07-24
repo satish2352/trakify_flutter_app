@@ -30,11 +30,13 @@ class FlatDetails extends StatefulWidget {
 }
 
 class FlatDetailsState extends State<FlatDetails> {
+
   String userId = '';
   late Flat flat;
   List<String>? flatStates;
   String newState = '';
   bool _isLoading = false;
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -90,7 +92,7 @@ class FlatDetailsState extends State<FlatDetails> {
     String imageString = Theme.of(context).brightness == Brightness.light
         ? 'assets/images/logo_blue.png'
         : 'assets/images/logo_white.png';
-    return Scaffold(
+    return Scaffold(key: scaffoldKey, endDrawer: const Drawer(child: NavBar(),),
       appBar: AppBar(
         elevation: 4,
         title: Image.asset(imageString, fit: BoxFit.fitWidth,
@@ -104,7 +106,9 @@ class FlatDetailsState extends State<FlatDetails> {
         actions: [
           IconButton(
             icon: const Icon(Icons.menu_outlined),
-            onPressed: () {showBottomDrawer(context);},
+            onPressed: () {
+              scaffoldKey.currentState!.openEndDrawer();
+            },
           ),
         ],
       ),
@@ -202,7 +206,6 @@ class FlatDetailsState extends State<FlatDetails> {
                       Row(
                         children: [
                           const Icon(Icons.currency_rupee, size: 20,),
-
                           MyHeadingText(text: formatPrice(flat.price), color: Colors.black),
                         ],
                       ),

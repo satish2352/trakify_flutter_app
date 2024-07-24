@@ -20,6 +20,7 @@ class ContactUsState extends State<ContactUs> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController(), _emailController = TextEditingController(), _numberController = TextEditingController();
   late String _selectedBhkValue="", _selectedBudget="";
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class ContactUsState extends State<ContactUs> {
 
     String imageString = Theme.of(context)
         .brightness == Brightness.light ? 'assets/images/logo_blue.png' : 'assets/images/logo_white.png';
-    return Scaffold(
+    return Scaffold(key: scaffoldKey, endDrawer: const Drawer(child: NavBar(),),
       appBar: AppBar(
         elevation: 4,
         title: Image.asset(imageString, fit: BoxFit.fitWidth,
@@ -56,7 +57,7 @@ class ContactUsState extends State<ContactUs> {
         actions: [
           IconButton(
             icon: const Icon(Icons.menu_outlined),
-            onPressed: () {showBottomDrawer(context);},
+            onPressed: () {scaffoldKey.currentState!.openEndDrawer();},
           ),
         ],
       ),

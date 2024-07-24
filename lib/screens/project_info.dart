@@ -20,6 +20,8 @@ class ProjectInfo extends StatefulWidget {
 }
 
 class ProjectInfoState extends State<ProjectInfo> {
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late final Project project;
 
   @override
@@ -33,7 +35,8 @@ class ProjectInfoState extends State<ProjectInfo> {
     String imageString = Theme.of(context).brightness == Brightness.light
         ? 'assets/images/logo_blue.png'
         : 'assets/images/logo_white.png';
-    return Scaffold(
+    return Scaffold(key: scaffoldKey,
+      endDrawer: const Drawer(child: NavBar(),),
       appBar: AppBar(
         elevation: 4,
         title: Image.asset(
@@ -51,9 +54,7 @@ class ProjectInfoState extends State<ProjectInfo> {
         actions: [
           IconButton(
             icon: const Icon(Icons.menu_outlined),
-            onPressed: () {
-              showBottomDrawer(context);
-            },
+            onPressed: () {scaffoldKey.currentState!.openEndDrawer();},
           ),
         ],
       ),

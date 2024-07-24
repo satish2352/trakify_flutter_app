@@ -22,6 +22,8 @@ class WingScreen extends StatefulWidget {
 }
 
 class _WingScreenState extends State<WingScreen> with RouteAware {
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<Wing> wings = [];
   bool _isLoading = false;
 
@@ -89,7 +91,7 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
     String imageString = Theme.of(context).brightness == Brightness.light
         ? 'assets/images/logo_blue.png'
         : 'assets/images/logo_white.png';
-    return Scaffold(
+    return Scaffold(key: scaffoldKey, endDrawer: const Drawer(child: NavBar(),),
       appBar: AppBar(
         elevation: 4,
         title: Image.asset(
@@ -108,7 +110,7 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
           IconButton(
             icon: const Icon(Icons.menu_outlined),
             onPressed: () {
-              showBottomDrawer(context);
+              scaffoldKey.currentState!.openEndDrawer();
             },
           ),
         ],

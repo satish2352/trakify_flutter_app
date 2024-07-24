@@ -42,8 +42,8 @@ class UpdateFlatState extends State<UpdateFlat> {
   late int customerContact = widget.flat.customerNumber;
 
   late TextEditingController customerNameController, customerNumberController, _commentController;
-
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState(){
@@ -101,7 +101,7 @@ class UpdateFlatState extends State<UpdateFlat> {
         .brightness == Brightness.light
         ? 'assets/images/logo_blue.png'
         : 'assets/images/logo_white.png';
-    return Scaffold(
+    return Scaffold(key: scaffoldKey, endDrawer: const Drawer(child: NavBar(),),
       appBar: AppBar(
         elevation: 4,
         title: Image.asset(imageString, fit: BoxFit.fitWidth,
@@ -115,7 +115,7 @@ class UpdateFlatState extends State<UpdateFlat> {
         actions: [
           IconButton(
             icon: const Icon(Icons.menu_outlined),
-            onPressed: () {showBottomDrawer(context);},
+            onPressed: () {scaffoldKey.currentState!.openEndDrawer();},
           ),
         ],
       ),

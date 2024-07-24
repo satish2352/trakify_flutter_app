@@ -61,17 +61,16 @@ class NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(10),
       child: SizedBox(
         width: MediaQuery.of(context).size.width*0.9,
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child: Column(
+              child: Column(mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
@@ -105,17 +104,14 @@ class NavBarState extends State<NavBar> {
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Text('Themes', style: TextStyle(fontFamily: 'OpenSans', fontSize: 16),),
-            ),
+            const ListTile(title: Text('Themes', style: TextStyle(fontFamily: 'OpenSans',),),),
             Padding(
               padding: const EdgeInsets.only(right:  15.0, left:  15.0, bottom: 15.0,),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
+                  Column(mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(onPressed: (){
@@ -127,6 +123,7 @@ class NavBarState extends State<NavBar> {
                     ],
                   ),
                   Column(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(onPressed: (){
@@ -137,7 +134,7 @@ class NavBarState extends State<NavBar> {
                       Text('Dark', style: TextStyle(fontFamily: 'OpenSans', color: Theme.of(context).primaryColorDark)),
                     ],
                   ),
-                  Column(
+                  Column(mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(onPressed: (){
@@ -178,11 +175,11 @@ class NavBarState extends State<NavBar> {
   }
 }
 
-void showBottomDrawer(BuildContext context) {
+/*void showBottomDrawer(BuildContext context) {
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
       return const NavBar();
     },
   );
-}
+}*/

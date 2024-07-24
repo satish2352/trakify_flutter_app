@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:trakify/app/network.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/project_class.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
-import 'package:trakify/ui_components/loading_indicator.dart';
 import 'package:trakify/ui_components/navbar.dart';
 import 'package:trakify/ui_components/project_card.dart';
 import 'package:trakify/ui_components/text.dart';
@@ -80,8 +78,7 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
       //DialogManager.showInfoDialog(context, 'Pass', projects.toString());
     } else {
       //API fetch Error
-      DialogManager.showInfoDialog(
-          context, 'Fail', "Please check your internet connection");
+      DialogManager.showInfoDialog(context, 'Fail', "Please check your internet connection");
     }
   }
 
@@ -93,8 +90,9 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
 
     return WillPopScope(
       onWillPop: () async {
-        if (scaffoldKey.currentState!.isDrawerOpen) {
+        if (scaffoldKey.currentState!.isEndDrawerOpen) {
           scaffoldKey.currentState!.openEndDrawer();
+          Navigator.pop(context);
           return false;
         } else {
           _exitApp();
@@ -113,7 +111,7 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
           ),
           leading: IconButton(
             onPressed: () {
-              if (scaffoldKey.currentState!.isDrawerOpen) {
+              if (scaffoldKey.currentState!.isEndDrawerOpen) {
                 scaffoldKey.currentState!.openEndDrawer();
               } else {
                 _exitApp();
@@ -125,11 +123,12 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
             IconButton(
               icon: const Icon(Icons.menu_outlined),
               onPressed: () {
-                showBottomDrawer(context);
+                scaffoldKey.currentState!.openEndDrawer();
               },
             ),
           ],
         ),
+        endDrawer: const Drawer(child: NavBar(),),
         body: Stack(
           children: [
             Container(

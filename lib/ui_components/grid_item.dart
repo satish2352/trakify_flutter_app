@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trakify/data/flatItem_class.dart';
 import 'package:trakify/ui_components/animations.dart';
 import 'package:trakify/ui_components/colors.dart';
+import 'package:trakify/ui_components/text.dart';
 
 class GridItem extends StatelessWidget {
   final FlatItem flat;
@@ -14,38 +15,33 @@ class GridItem extends StatelessWidget {
     return AppearAnimation(
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          margin: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: c,
-            boxShadow: [
-              BoxShadow(
-                color: c.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: const Offset(0, 2),
+        child: Column(mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(height: 30, width: 30,
+              margin: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                shape: BoxShape.rectangle,
+                color: c,
               ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              flat.flatNumber,
-              style: TextStyle(
-                fontFamily: 'OpenSans',
-                color: _getTextColor(c),
-                fontWeight: FontWeight.bold,
-              ),
+              child: Image.asset("assets/images/ic_flat.png"),
             ),
-          ),
+            MySimpleText(
+              text: flat.flatNumber,
+              size: 14,
+              bold: true,
+              color: Colors.black,
+            ),
+            MySimpleText(
+              text: "${flat.bhk} BHK",
+              size: 12,
+              bold: false,
+              color: Colors.black,
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  Color _getTextColor(Color backgroundColor) {
-    final luminance = backgroundColor.computeLuminance();
-    return luminance > 0.5 ? Colors.black : Colors.white;
   }
 
   // Function to get flat state color

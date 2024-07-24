@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trakify/app/network.dart';
 import 'package:trakify/app/page_route.dart';
+import 'package:trakify/screens/contact_us.dart';
 import 'package:trakify/screens/sign_in.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
 import 'package:trakify/ui_components/theme_provider.dart';
@@ -151,6 +152,13 @@ class NavBarState extends State<NavBar> {
               ),
             ),
             ListTile(
+              trailing: const Icon(Icons.contact_support),
+              title: const Text('Contact Us', style: TextStyle(fontFamily: 'OpenSans',),),
+              onTap: () {
+                Navigator.push(context, CustomPageRoute(nextPage: const ContactUs(), direction: -1));
+              },
+            ),
+            ListTile(
               trailing: const Icon(Icons.logout_outlined),
               title: const Text('Logout', style: TextStyle(fontFamily: 'OpenSans',),),
               onTap: () {
@@ -168,4 +176,13 @@ class NavBarState extends State<NavBar> {
       ),
     );
   }
+}
+
+void showBottomDrawer(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return const NavBar();
+    },
+  );
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trakify/app/network.dart';
 import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/api_service.dart';
+import 'package:trakify/data/project_class.dart';
 import 'package:trakify/data/wing_class.dart';
 import 'package:trakify/screens/wings_dashboard.dart';
 import 'package:trakify/ui_components/animations.dart';
@@ -11,19 +12,18 @@ import 'package:trakify/ui_components/loading_indicator.dart';
 import 'package:trakify/ui_components/navbar.dart';
 import 'package:trakify/ui_components/text.dart';
 
-
 class WingScreen extends StatefulWidget {
-  final String selectedProjectId;
+  final Project project;
 
-  const WingScreen({super.key, required this.selectedProjectId});
+  const WingScreen({super.key, required this.project});
 
   @override
   State<WingScreen> createState() => _WingScreenState();
 }
 
-class _WingScreenState extends State<WingScreen> with RouteAware{
+class _WingScreenState extends State<WingScreen> with RouteAware {
   List<Wing> wings = [];
-  bool _isLoading = false; // Add this variable
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -50,7 +50,6 @@ class _WingScreenState extends State<WingScreen> with RouteAware{
 
   @override
   void didPopNext() {
-    // Called when the current route has been popped off, and the user returned to this route.
     _initializeData();
   }
 
@@ -65,8 +64,8 @@ class _WingScreenState extends State<WingScreen> with RouteAware{
   }
 
   Future<void> _fetchWings() async {
-    FetchResult result = await APIService.fetchWings(widget.selectedProjectId);
-    if(!mounted) return;
+    FetchResult result = await APIService.fetchWings(widget.project.id);
+    if (!mounted) return;
     if (result.success) {
       setState(() {
         wings = result.data as List<Wing>;
@@ -76,127 +75,212 @@ class _WingScreenState extends State<WingScreen> with RouteAware{
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 4,
-        title: const Text(
-          'Wings',
-          style: TextStyle(
-            fontFamily: 'OpenSans',
-            fontSize: 25,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        iconTheme: const IconThemeData(color: Colors.white),
-        leading: IconButton(onPressed: (){Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_back_outlined)),
-        actions: [IconButton(icon: const Icon(Icons.menu_outlined), onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return const NavBar();
-            },
-          );},),],
-      ),
-      body: _isLoading ? LoadingIndicator.build() : RefreshIndicator(strokeWidth: 2, color: Colors.blue, onRefresh: _refreshPage,
-        child: SizedBox(width: double.infinity, height: double.infinity,
-          child: SingleChildScrollView(physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(padding: const EdgeInsets.all(15.0),
-              child: wings.isEmpty ? const Center(child: MySimpleText(text: "No wings are available", size: 25,),)
-                  : GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 30,
-                      mainAxisSpacing: 30,
-                      children: List.generate(wings.length,
-                        (index) => index%2==0?
-                        FadeInAnimation(delay: 0.4, direction: 'right', child: _buildButton(context, wings[index])):
-                        FadeInAnimation(delay: 0.4, direction: 'left', child: _buildButton(context, wings[index])),
-                      ),
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildButton(BuildContext context, Wing wing) {
-    return SingleChildScrollView(
-      child: Material(elevation: 4, borderRadius: BorderRadius.circular(20.0), shadowColor: Colors.lightBlue,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-              CustomPageRoute(
-                nextPage: WingsDashboardPage(wingName: wing.name, selectedProjectId: widget.selectedProjectId, selectedWingId: wing.id,),
-                direction: 0,
-              ),
-            );
-          },
-          child: Column(mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20),),
-                  color: Colors.blue,
-                ),
-                child: Column(
-                  children: [
-                    Text(wing.name, style: const TextStyle(fontFamily: 'OpenSans', fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold,),),
-                    const SizedBox(height: 2),
-                    MySimpleText(text: 'Number of Floors ${wing.floor.toString()}', size: 12,
-                      color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                    ),
-                    const SizedBox(height: 2),
-                  ],
-                ),
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20),),
-                ),
-                child: Padding(padding: const EdgeInsets.all(8),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          buildContainer(MyColor.gridYellow, wing.availableFlats.toString()),
-                          buildContainer(MyColor.gridGreen, wing.bookedFlats.toString()),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          buildContainer(MyColor.gridBlue, wing.holdFlats.toString()),
-                          buildContainer(MyColor.gridRed, wing.blockedFlats.toString()),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Future<void> _refreshPage() async {
     try {
       await _fetchWings();
-      if(!mounted) return;
+      if (!mounted) return;
     } catch (e) {
       DialogManager.showErrorDialog(context, "Could Not Fetch", "Cannot fetch data from the servers, please check your connection");
     }
   }
 
-  buildContainer(Color bgColor, String wingCount) {
-    return Container(padding: const EdgeInsets.all(5), width: 40,
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(10)),
-      child: Center(child: MySimpleText(text: wingCount, color: bgColor == MyColor.gridYellow ? MyColor.black : Colors.white, size: 16,)),
+  @override
+  Widget build(BuildContext context) {
+    String imageString = Theme.of(context).brightness == Brightness.light
+        ? 'assets/images/logo_blue.png'
+        : 'assets/images/logo_white.png';
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 4,
+        title: Image.asset(
+          imageString,
+          fit: BoxFit.fitWidth,
+          width: MediaQuery.of(context).size.width * 0.2,
+          height: MediaQuery.of(context).size.height * 0.2,
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu_outlined),
+            onPressed: () {
+              showBottomDrawer(context);
+            },
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/wings_bg.png'),
+                fit: BoxFit.fill,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+          ),
+          RefreshIndicator(
+            strokeWidth: 2,
+            color: Colors.blue,
+            onRefresh: _fetchWings,
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.6,
+              minChildSize: 0.6,
+              maxChildSize: 1.0,
+              expand: true,
+              builder: (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                        strokeWidth: 2,
+                      ),
+                    ],
+                  ) : ListView(
+                    controller: scrollController,
+                    children: [
+                      MyHeadingText(text: widget.project.name, color: Colors.black),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            height: MediaQuery.of(context).size.width * 0.05,
+                            child: Image.asset("assets/images/building.png"),
+                          ),
+                          const SizedBox(width: 10),
+                          MySimpleText(text: widget.project.type, size: 14),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            height: MediaQuery.of(context).size.width * 0.05,
+                            child: Image.asset("assets/images/location.png"),
+                          ),
+                          const SizedBox(width: 10),
+                          MySimpleText(text: "${widget.project.city}, ${widget.project.state}", size: 14),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      const Center(child: MySubHeadingText(text: "SELECT WING", color: Colors.black)),
+                      const SizedBox(height: 20),
+                      //...wings.map(_wingItem),
+                      SizedBox(height: MediaQuery.sizeOf(context).height*0.6,
+                        child: GridView.builder(
+                          controller: scrollController,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 2,
+                            childAspectRatio: 1.0,
+                          ),
+                          itemCount: wings.length,
+                          itemBuilder: (context, index) {
+                            return _wingItem(wings[index]);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _wingItem(Wing wing) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context,
+          CustomPageRoute(
+            nextPage: WingsDashboardPage(wingName: wing.name, project: widget.project, selectedWingId: wing.id,),
+            direction: 0,
+          ),
+        );
+      },
+      child: Container(padding: const EdgeInsets.all(10), height: 200, width: 200,
+        child: Column(
+          children: [
+            MySimpleText(
+              text: wing.name,
+              color: Colors.black,
+              size: 14,
+              bold: true,
+            ),
+            const SizedBox(height: 10,),
+            Stack(
+              children: [
+                Positioned(top: 30, left: 10,
+                  child: Container(width: 120, height: 70,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black,),
+                      borderRadius: BorderRadius.circular(2),
+                    ),),
+                ),
+                Positioned(
+                  child: Column(
+                    children: [
+                      Container(width: 60, height: 60,
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(shape: BoxShape.circle, color: MyColor.bluePrimary),
+                        child: Image.asset("assets/images/wing_ic.png"),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          columnData(MyColor.gridGreen, wing.bookedFlats),
+                          columnData(MyColor.gridBlue, wing.holdFlats),
+                          columnData(MyColor.gridYellow, wing.availableFlats),
+                          columnData(MyColor.gridRed, wing.blockedFlats),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget columnData(Color color, int count) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Column(
+        children: [
+          Container(
+            height: 15,
+            width: 15,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+          ),
+          MySimpleText(text: count.toString(), size: 12),
+        ],
+      ),
     );
   }
 }

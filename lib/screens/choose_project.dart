@@ -125,7 +125,7 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
             IconButton(
               icon: const Icon(Icons.menu_outlined),
               onPressed: () {
-                _showBottomDrawer(context);
+                showBottomDrawer(context);
               },
             ),
           ],
@@ -151,8 +151,7 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
                 minChildSize: 0.6,
                 maxChildSize: 1.0,
                 expand: true,
-                builder:
-                    (BuildContext context, ScrollController scrollController) {
+                builder: (BuildContext context, ScrollController scrollController) {
                   return Container(
                     decoration: const BoxDecoration(
                       color: Colors.white,
@@ -168,7 +167,7 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
                         const Padding(
                             padding: EdgeInsets.only(left: 10, top: 5, bottom: 8),
                             child: MyHeadingText(
-                              text: "PROJECT LIST",
+                              text: "Project List",
                               color: Colors.black,
                             )),
                         isLoading
@@ -214,14 +213,5 @@ class ChooseProjectPageState extends State<ChooseProjectPage> with RouteAware {
         isExitPressed = false;
       });
     }
-  }
-
-  void _showBottomDrawer(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return const NavBar();
-      },
-    );
   }
 }

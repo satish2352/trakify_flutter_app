@@ -2,47 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trakify/app/network.dart';
-import 'package:trakify/app/page_route.dart';
 import 'package:trakify/data/api_service.dart';
 import 'package:trakify/data/flat_class.dart';
-import 'package:trakify/screens/flat_history.dart';
-import 'package:trakify/ui_components/animations.dart';
+import 'package:trakify/data/project_class.dart';
 import 'package:trakify/ui_components/button.dart';
 import 'package:trakify/ui_components/colors.dart';
-import 'package:trakify/ui_components/details_item.dart';
 import 'package:trakify/ui_components/dialog_manager.dart';
-import 'package:trakify/ui_components/dropdown.dart';
-import 'package:trakify/ui_components/loading_indicator.dart';
+import 'package:trakify/ui_components/my_text_field.dart';
 import 'package:trakify/ui_components/navbar.dart';
 import 'package:trakify/ui_components/text.dart';
 
 class UpdateFlat extends StatefulWidget {
-  final String flatId, floorId;
-  const UpdateFlat({super.key, required this.flatId, required this.floorId});
+  final Flat flat;
+  final Project project;
+  final String wingName, floorNumber, floorId;
+
+  const UpdateFlat({
+    super.key, required this.flat, required this.project, required this.wingName, required this.floorNumber, required this.floorId
+  }
+);
 
   @override
   UpdateFlatState createState() => UpdateFlatState();
 }
 
 class UpdateFlatState extends State<UpdateFlat> {
+
   String userId = '';
-  Flat? flat;
+
+  final Map<String, Color> statusColors = {
+    'available': MyColor.gridYellow,
+    'booked': MyColor.gridGreen,
+    'blocked': MyColor.gridRed,
+    'on hold': MyColor.gridBlue,
+  };
+
+  late String customerName = widget.flat.customerName, _selectedStatusValue = widget.flat.flatStatus;
+  late String? customerComment;
+  late int customerContact = widget.flat.customerNumber;
+
+  late TextEditingController customerNameController, customerNumberController, _commentController;
+
   final _formKey = GlobalKey<FormState>();
-  List<String>? flatStates;
-  String newState = '';
-  final TextEditingController _commentController = TextEditingController();
-  bool _isLoading = false;
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    newState = '';
-    NetworkUtil.checkConnectionAndProceed(context, () {
-      _initializeData();
-    });
+    _initializeData();
+    customerNameController = TextEditingController(text: customerName);
+    _commentController = TextEditingController();
+    customerNumberController = TextEditingController(text: customerContact.toString());
   }
 
-  Future<void> _initializeData() async {
+  void _initializeData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userID = prefs.getString('userID');
     if (userID != null && userID.isNotEmpty) {
@@ -50,225 +62,6 @@ class UpdateFlatState extends State<UpdateFlat> {
         userId = userID;
       });
     }
-    setState(() {
-      _isLoading = true;
-    });
-    await _fetchFlat();
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _fetchFlat() async {
-    FetchResult result = await APIService.fetchFlatDetails(widget.floorId, widget.flatId);
-    if (!mounted) return;
-    //DialogManager.showInfoDialog(context, 'Info', '${widget.floorId}\n${widget.flatId}\n${result.toString()}');
-    if (result.success) {
-      setState(() {
-        flat = result.data[0];
-        //DialogManager.showInfoDialog(context, 'Info', f);
-        flatStates = ['available', 'booked', 'blocked', 'hold'];
-        newState = flat!.flatStatus;
-      });
-    } else {
-      DialogManager.showInfoDialog(context, 'Failed to load data', "Please check your internet connection");
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 4,
-        title: const Text(
-          'Flat Details',
-          style: TextStyle(fontFamily: 'OpenSans', fontSize: 25, color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        iconTheme: const IconThemeData(color: Colors.white),
-        leading: IconButton(onPressed: () {
-          Navigator.of(context).pop();
-        }, icon: const Icon(Icons.arrow_back_outlined)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () {
-              Navigator.push(context, CustomPageRoute(nextPage: FlatHistory(flatId: flat!.id, flatNumber: flat!.flatNumber), direction: 0),);
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.menu_outlined),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return const NavBar();
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      body: _isLoading ? LoadingIndicator.build() : RefreshIndicator.adaptive(
-        strokeWidth: 2,
-        color: Colors.blue,
-        onRefresh: _initializeData,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              // ignore: unnecessary_null_comparison
-              child: flat != null ? _buildFlatDetails() : Center(child: LoadingIndicator.build(),),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFlatDetails() {
-    return Form(
-      key: _formKey,
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(12.0),
-              shadowColor: Colors.lightBlue,
-              color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black54,
-              child: FadeInAnimation(
-                direction: 'down',
-                delay: 0.4,
-                child: Column(children: [
-                  MyDetailsItem(itemName: 'Customer Name', value: flat!.customerName),
-                  MyDetailsItem(itemName: 'Customer Number', value: flat!.customerNumber.toString()),]),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(12.0),
-              shadowColor: Colors.lightBlue,
-              color: Theme.of(context).brightness == Brightness.light ? MyColor.darkWhite : MyColor.darkBlack,
-              child: FadeInAnimation(
-                direction: 'down',
-                delay: 0.4,
-                child: Column(children: [
-                  MyDetailsItem(itemName: 'Flat Number', value: flat!.flatNumber),
-                  MyDetailsItem(itemName: 'BHK', value: flat!.bhk.toString()),
-                  MyDetailsItem(itemName: 'Area', value: flat!.area.toString()),
-                  MyDetailsItem(itemName: 'Price', value: flat!.price.toString()),
-                  MyDetailsItem(itemName: 'Current State', value: flat!.flatStatus,),
-                  if (flat!.comment != null && flat!.comment!.isNotEmpty) ...[
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black54,
-                      ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 10),
-                          MyDetailsItem(itemName: 'Comment', value: flat!.comment!,),
-                          const SizedBox(height: 10),
-                          MyDetailsItem(itemName: 'Last changed by', value: formattedDate(flat!.lastUpdated.toString(),),),
-                        ],
-                      ),
-                    )
-                  ],
-                ]),
-              ),
-            ),
-            // Dropdown for Flat State
-            const SizedBox(height: 20),
-            // Text Field for Comments
-            FadeInAnimation(
-              direction: 'down',
-              delay: 1.6,
-              child: MyButton(text: 'Change Flat State', onPressed: () {
-                _showUpdateDialog();
-              }),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  outlineInputBorder() {
-    return OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.lightBlue),
-      borderRadius: BorderRadius.circular(10),
-    );
-  }
-
-  String formattedDate(String dateString) {
-    DateTime dateTime = DateTime.parse(dateString);
-    String formattedDateString = DateFormat('dd-MMM\nhh:mma').format(dateTime);
-    return formattedDateString;
-  }
-
-  void _showUpdateDialog() {
-    showDialog(context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const MySimpleText(text: 'Customer Name', size: 12),
-                TextFormField(initialValue: flat?.customerName),
-                const SizedBox(height: 10),
-                const MySimpleText(text: 'Customer Number', size: 12),
-                TextFormField(initialValue: flat?.customerNumber.toString()),
-                const SizedBox(height: 10),
-                FadeInAnimation(direction: 'down', delay: 0.8,
-                  child: Padding(padding: const EdgeInsets.all(8.0),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Expanded(child: Text('Change State: ', style: TextStyle(fontFamily: 'OpenSans'),),),
-                        Expanded(child: MyDropdown(hint: 'State', items: flatStates, value: newState,
-                          onChanged: (String newValue) {
-                            setState(() {
-                              newState = newValue;
-                            });
-                          },
-                        ),),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                FadeInAnimation(direction: 'down', delay: 1.2,
-                  child: TextFormField(controller: _commentController, maxLines: 2,
-                    decoration: const InputDecoration(hintText: "Enter comments here...",),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            MyButton(
-              text: 'Update',
-              onPressed: () {
-                if (_commentController.text.isEmpty) {
-                  DialogManager.showErrorDialog(context, 'Error', 'Comments cannot be empty.');
-                } else {
-                  Navigator.of(context).pop();
-                  _updateFlatDetails();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _updateFlatDetails() {
@@ -276,19 +69,21 @@ class UpdateFlatState extends State<UpdateFlat> {
       if (_formKey.currentState!.validate()) {
         DialogManager.showQuestionDialog(context, 'Confirm Submission?', () async {
           if (_formKey.currentState!.validate()) {
+            DialogManager.showLoadingDialog(context);
             String formattedDate = DateFormat('dd MMMM yyyy, hh:mm a').format(DateTime.now());
             Map<String, dynamic> updateResult = await APIService.updateFlatDetails(
               widget.floorId,
-              flat!.id,
-              newState,
+              widget.flat.id,
+              _selectedStatusValue,
               _commentController.text,
               userId,
               formattedDate,
             );
             if (updateResult.containsKey('error')) {
+              DialogManager.dismissLoadingDialog(context);
               DialogManager.showErrorDialog(context, 'Error', updateResult['error'],);
             } else {
-              _fetchFlat();
+              DialogManager.dismissLoadingDialog(context);
               DialogManager.showSuccessDialog(context, 'Hurray!', 'Flat status updated',);
               _commentController.clear();
             }
@@ -297,4 +92,195 @@ class UpdateFlatState extends State<UpdateFlat> {
       }
     });
   }
+
+  @override
+  Widget build(BuildContext context) {
+
+    String imageString = Theme
+        .of(context)
+        .brightness == Brightness.light
+        ? 'assets/images/logo_blue.png'
+        : 'assets/images/logo_white.png';
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 4,
+        title: Image.asset(imageString, fit: BoxFit.fitWidth,
+          width: MediaQuery.of(context).size.width * 0.2,
+          height: MediaQuery.of(context).size.height * 0.2,
+        ),
+        leading: IconButton(
+          onPressed: () {Navigator.pop(context);},
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu_outlined),
+            onPressed: () {showBottomDrawer(context);},
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/flat_details_bg.png'),
+                fit: BoxFit.fill,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+          ),
+          DraggableScrollableSheet(
+            initialChildSize: 0.6,
+            minChildSize: 0.6,
+            maxChildSize: 1.0,
+            expand: true,
+            builder: (BuildContext context,
+                ScrollController scrollController) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    controller: scrollController,
+                    children: [
+                      const SizedBox(height: 10),
+                      MyHeadingText(text: widget.project.name, color: Colors.black),
+                      //const SizedBox(height: 5),
+                      Container(padding: const EdgeInsets.symmetric(vertical: 5),
+                        width: MediaQuery.sizeOf(context).width*0.8,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.blue, Colors.white],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                          child: Text(
+                            "Wing ${widget.wingName} | ${widget.floorNumber} | Flat No. ${widget.flat.flatNumber}",
+                            style: const TextStyle(
+                              fontFamily: 'OpenSans',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            height: MediaQuery.of(context).size.width * 0.05,
+                            child: Image.asset("assets/images/location.png"),
+                          ),
+                          const SizedBox(width: 10),
+                          MySimpleText(text: "${widget.project.city}, ${widget
+                              .project.state}", size: 14),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const MyHeadingText(text: "ACTION", color: Colors.black),
+                      const SizedBox(height: 10),
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, mainAxisSize: MainAxisSize.max,
+                        children: [
+                          radioButtonForFlatStatus(),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      MyIconTextField(hintText: "Customer Name", ic: const Icon(Icons.person),
+                        controller: customerNameController,
+                        onChanged: (newValue){
+                        setState(() {
+                          customerName = newValue;
+                        });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      MyIconTextField(hintText: "Customer Contact", ic: const Icon(Icons.call),
+                        controller: customerNumberController,
+                        keyboardType: TextInputType.number,
+                        onChanged: (newValue){
+                        setState(() {
+                          customerContact = newValue.toString() as int;
+                        });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      MyIconTextField(hintText: "Comment", ic: const Icon(Icons.message),
+                        controller: _commentController,
+                        onChanged: (newValue){
+                          setState(() {
+                            customerComment = newValue.toString() ;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.min,
+                        children: [
+                          MyButton(text: "SUBMIT", onPressed: (){
+                            if (customerNumberController.text.isEmpty || customerNameController.text.isEmpty || _commentController.text.isEmpty || _selectedStatusValue==widget.flat.flatStatus) {
+                              DialogManager.showErrorDialog(context, 'Error', 'Please fill new state, customer name, number & comment.');
+                            } else {
+                              //Navigator.of(context).pop();
+                              _updateFlatDetails();
+                            }
+                          }),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+
+        ],
+      ),
+    );
+  }
+
+  radioButtonForFlatStatus() {
+    List<String> statuses = ['available', 'booked', 'blocked', 'on hold'];
+    statuses.remove(widget.flat.flatStatus);
+
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: statuses.map((status) {
+        return Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            children: [
+              Radio<String>(
+                value: status,
+                groupValue: _selectedStatusValue,
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedStatusValue = value!;
+                  });
+                },
+                activeColor: statusColors[status],
+                //overlayColor: new WidgetStateProperty<Color?>,
+              ),
+              MySimpleText(text: status, size: 16, color: statusColors[status], bold: true,),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+
 }

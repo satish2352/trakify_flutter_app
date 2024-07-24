@@ -3,6 +3,7 @@ class FlatItem {
   final String flatNumber;
   final String flatStatus;
   final String floorId;
+  final int bhk;
   final int floorNumber;
 
   FlatItem({
@@ -11,6 +12,8 @@ class FlatItem {
     required this.flatStatus,
     required this.floorId,
     required this.floorNumber,
+    //required.this.bhk=2;
+    this.bhk=2,
   });
 }
 

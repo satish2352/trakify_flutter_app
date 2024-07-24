@@ -19,6 +19,7 @@ dependencies:
   accordion: ^2.6.0
   connectivity: ^3.0.6
   scaled_list: ^2.0.0
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:

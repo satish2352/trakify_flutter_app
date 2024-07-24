@@ -38,6 +38,20 @@ class APIService {
     }
   }
 
+  /*
+  static Future<FetchResult> fetchProjectById(String projectId) async {
+    try {
+      String jsonString =
+      await APIService.fetchData('projects/getProjectDetails?_id=$projectId');
+      final parsed = json.decode(jsonString);
+      Project fetchedProject = jsonString.Project
+      return FetchResult(true, '', fetchedProjects);
+    } catch (error) {
+      return FetchResult(false, error.toString(), []);
+    }
+  }
+  */
+
   static Future<FetchResult> fetchWings(String projectId) async {
     try {
       String jsonString =

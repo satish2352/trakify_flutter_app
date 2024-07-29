@@ -86,8 +86,11 @@ class UpdateFlatState extends State<UpdateFlat> {
               DialogManager.showErrorDialog(context, 'Error', updateResult['error'],);
             } else {
               DialogManager.dismissLoadingDialog(context);
-              DialogManager.showSuccessDialog(context, 'Hurray!', 'Flat status updated',);
+              DialogManager.showSuccessDialog(context, 'Hurray!', 'Flat status updated');
               _commentController.clear();
+              Future.delayed(const Duration(seconds: 1), () {
+                Navigator.of(context).pop();
+              });
             }
           }
         });

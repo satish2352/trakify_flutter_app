@@ -17,15 +17,17 @@ class ProjectCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(height: 160, width: MediaQuery.sizeOf(context).width * 0.9,
+      //decoration: BoxDecoration(border: Border.all(color: Colors.black), color: Colors.pink,),
       child: GestureDetector(
         onTap: (){
           Navigator.push(context, CustomPageRoute(nextPage: ProjectInfo(project: project), direction: 1));
         },
         child: Stack(
           children: [
-            Positioned(top: 40, left: 40,
+            Positioned(top: 40, left: MediaQuery.sizeOf(context).width*0.25/2,
               child: Material(borderRadius: BorderRadius.circular(20), elevation: 4,
                 child: Container(padding: const EdgeInsets.only(right: 25),
+                  width: MediaQuery.sizeOf(context).width*0.75,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.grey, width: 1,),
@@ -62,8 +64,8 @@ class ProjectCardWidget extends StatelessWidget {
             Positioned(top: 5, left: 5,
               child: Material(shape: const CircleBorder(), elevation: 4, shadowColor: Colors.black,
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  height: MediaQuery.of(context).size.width * 0.25,
+                  width: MediaQuery.sizeOf(context).width * 0.25,
+                  height: MediaQuery.sizeOf(context).width * 0.25,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -72,7 +74,6 @@ class ProjectCardWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ),
             ),
           ],

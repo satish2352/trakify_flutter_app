@@ -108,7 +108,7 @@ class SignInPageState extends State<SignInPage> {
                                   Navigator.push(context, CustomPageRoute(nextPage: OtpPage(mobileNumber: mobile, staySignedIn: staySignedIn,), direction: 0),);
                                 } catch (e) {
                                   DialogManager.dismissLoadingDialog(context);
-                                  DialogManager.showInfoDialog(context, 'Error', e.toString());
+                                  //DialogManager.showInfoDialog(context, 'Error', e.toString());
                                 }
                               });
                             }

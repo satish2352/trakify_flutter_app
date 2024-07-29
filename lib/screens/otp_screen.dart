@@ -153,7 +153,7 @@ class OtpPageState extends State<OtpPage> {
                       } catch (e) {
                         DialogManager.dismissLoadingDialog(context);
                         //DialogManager.showInfoDialog(context, 'Error', 'Mobile or password is incorrect\nOr user not registered');
-                        DialogManager.showInfoDialog(context, 'Error', e.toString());
+                        //DialogManager.showInfoDialog(context, 'Error', e.toString());
                       }
                     });
                   }),

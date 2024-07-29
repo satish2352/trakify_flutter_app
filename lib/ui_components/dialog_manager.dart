@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class DialogManager {
 
   static Future<void> showLoadingDialog(BuildContext context) async {
-    return showDialog<void>(
+    return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -23,7 +23,7 @@ class DialogManager {
   }
 
   static void dismissLoadingDialog(BuildContext context) {
-    Navigator.of(context).pop();
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   static void showSuccessDialog(BuildContext context, String title, String description) {
@@ -58,7 +58,9 @@ class DialogManager {
       animType: AnimType.scale,
       title: title,
       desc: description,
-      btnOkOnPress: () {},
+      btnOkOnPress: () {
+        Navigator.pop(context);
+      },
     ).show();
   }
 

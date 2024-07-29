@@ -4,7 +4,7 @@ class Flat {
   final String flatStatus;
   final int area;
   final int price;
-  final double bhk;
+  final String bhk;
   String? comment;
   String? lastUpdated;
   final String customerName = "Dummy Customer";
@@ -28,7 +28,7 @@ class Flat {
       flatStatus: json['status'],
       area: json['area'],
       price: json['price'],
-      bhk: (json['bhk'] as num).toDouble(),
+      bhk: (json['bhk'] as num).toString(),
       comment: json['comment'],
       lastUpdated: json['lastUpdated'],
     );

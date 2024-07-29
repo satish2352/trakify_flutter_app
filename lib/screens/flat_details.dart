@@ -208,7 +208,7 @@ class FlatDetailsState extends State<FlatDetails> with RouteAware {
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const MySimpleText(text: "Description", size: 16, color: Colors.black, bold: true,),
-                              MySimpleText(text: "A ${flat.bhk} BHK flat,\nspread across ${flat.area} square foot." , size: 16, color: Colors.black,),
+                              MySimpleText(text: "A ${flat.bhk} flat,\nspread across ${flat.area} square foot." , size: 16, color: Colors.black,),
                             ],
                           ),
                         ),

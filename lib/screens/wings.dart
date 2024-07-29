@@ -174,8 +174,7 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               crossAxisSpacing: 5,
-                              mainAxisSpacing: 2,
-                              childAspectRatio: 1.0,
+                              mainAxisSpacing: 3,
                             ),
                             itemCount: wings.length,
                             itemBuilder: (context, index) {
@@ -206,49 +205,40 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
           ),
         );
       },
-      child: Container(padding: const EdgeInsets.all(10), height: 200, width: 200,
-        child: Column(
-          children: [
-            MySimpleText(
-              text: wing.name,
-              color: Colors.black,
-              size: 14,
-              bold: true,
+      child: SizedBox(width: MediaQuery.sizeOf(context).width*0.5 - 10,
+        child: Stack(
+          children:[
+            Positioned(top: 55,
+              child: Container(padding: const EdgeInsets.only(top: 40), width: MediaQuery.sizeOf(context).width*0.5-20,
+              decoration: BoxDecoration(border: Border.all(color: Colors.black),),
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  columnData(MyColor.gridGreen, wing.bookedFlats),
+                  columnData(MyColor.gridBlue, wing.holdFlats),
+                  columnData(MyColor.gridYellow, wing.availableFlats),
+                  columnData(MyColor.gridRed, wing.blockedFlats),
+                ],),
+              ),
             ),
-            const SizedBox(height: 10,),
-            Stack(
+            Column(
               children: [
-                Positioned(top: 30, left: 10,
-                  child: Container(width: 120, height: 70,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black,),
-                      borderRadius: BorderRadius.circular(2),
-                    ),),
+              MySimpleText(
+                text: wing.name,
+                color: Colors.black,
+                size: 14,
+                bold: true,
+              ),
+              const SizedBox(height: 10,),
+              Center(
+                child: Container(width: 60, height: 60,
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(shape: BoxShape.circle, color: MyColor.bluePrimary),
+                  child: Image.asset("assets/images/wing_ic.png"),
                 ),
-                Positioned(
-                  child: Column(
-                    children: [
-                      Container(width: 60, height: 60,
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(shape: BoxShape.circle, color: MyColor.bluePrimary),
-                        child: Image.asset("assets/images/wing_ic.png"),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          columnData(MyColor.gridGreen, wing.bookedFlats),
-                          columnData(MyColor.gridBlue, wing.holdFlats),
-                          columnData(MyColor.gridYellow, wing.availableFlats),
-                          columnData(MyColor.gridRed, wing.blockedFlats),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+              ),
               ],
             ),
-          ],
+      ],
         ),
       ),
     );

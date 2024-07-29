@@ -132,7 +132,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
           Material(elevation: 4, shape: const CircleBorder(),
             child: Container(width: 20, height: 20,
               decoration: BoxDecoration(
-                shape: BoxShape.circle, color: color
+                  shape: BoxShape.circle, color: color
               ),
             ),
           ),
@@ -168,10 +168,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
         child: Stack(
           children: [
             Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.5,
+              height: MediaQuery.of(context).size.height * 0.5,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/wings_dashboard_bg.jpg'),
@@ -192,141 +189,130 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
                 minChildSize: 0.6,
                 maxChildSize: 1.0,
                 expand: true,
-                builder: (BuildContext context,
-                    ScrollController scrollController) {
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                builder: (BuildContext context, ScrollController scrollController) {
+                  return SingleChildScrollView(
+                    controller: scrollController,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                          strokeWidth: 2,
-                        ),
-                      ],
-                    ) : ListView(
-                      controller: scrollController,
-                      children: [
-                        MyHeadingText(
-                            text: "${widget.project.name}\n${widget.wingName}", color: Colors.black),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.05,
-                              height: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.05,
-                              child: Image.asset("assets/images/building.png"),
-                            ),
-                            const SizedBox(width: 10),
-                            MySimpleText(text: widget.project.type, size: 14),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.05,
-                              height: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.05,
-                              child: Image.asset("assets/images/location.png"),
-                            ),
-                            const SizedBox(width: 10),
-                            MySimpleText(text: "${widget.project.city}, ${widget
-                                .project.state}", size: 14),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        const Center(child: MySubHeadingText(text: "SELECT FLAT", color: Colors.black)),
-                        const SizedBox(height: 20),
-                        //add component here
-                        SizedBox(height: MediaQuery.sizeOf(context).height * 0.6,
-                          child: Expanded(
-                            child: SizedBox(height: MediaQuery.of(context).size.height * 0.6,
-                              child: filteredFlats.isEmpty ? const MySimpleText(text: 'No flats available', size: 18,) : ListView.builder(
-                                itemCount: filteredFlats.map((flat) => flat.floorNumber).toSet().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final floorNumber = filteredFlats.map((flat) => flat.floorNumber).toSet().toList()[index];
-                                  final flatsForFloor = filteredFlats.where((flat) => flat.floorNumber == floorNumber).toList();
-                                  return Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                        child: AppearAnimation(
-                                          child: Row(mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Container(padding: const EdgeInsets.symmetric(vertical: 5),
-                                                width: MediaQuery.sizeOf(context).width*0.8,
-                                                decoration: const BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    colors: [Colors.blue, Colors.white],
-                                                    begin: Alignment.centerLeft,
-                                                    end: Alignment.centerRight,
-                                                  ),
-                                                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                                                  child: Text(
-                                                    getUserReadableFloorLabel(floorNumber),
-                                                    style: const TextStyle(
-                                                      fontFamily: 'OpenSans',
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      GridView.builder(
-                                        shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4, crossAxisSpacing: 3.0, mainAxisSpacing: 3.0,
-                                        ),
-                                        itemCount: flatsForFloor.length,
-                                        itemBuilder: (context, flatIndex) {
-                                          return GridItem(
-                                            flat: flatsForFloor[flatIndex],
-                                            onTap: () {
-                                              NetworkUtil.checkConnectionAndProceed(context, () {
-                                                Navigator.push(context, CustomPageRoute(nextPage: FlatDetails(flatId: flatsForFloor[flatIndex].id, floorId: flatsForFloor[flatIndex].floorId, project: widget.project, wingName: widget.wingName, floorNumber: getUserReadableFloorLabel(flatsForFloor[flatIndex].floorNumber),), direction: 1));
-                                              });
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
+                      child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyHeadingText(text: "${widget.project.name}\n${widget.wingName}", color: Colors.black),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height: MediaQuery.of(context).size.width * 0.05,
+                                child: Image.asset("assets/images/building.png"),
                               ),
-                            ),
+                              const SizedBox(width: 10),
+                              MySimpleText(text: widget.project.type, size: 14),
+                            ],
                           ),
-                        ),
-                      ],
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 0.05,
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 0.05,
+                                child: Image.asset("assets/images/location.png"),
+                              ),
+                              const SizedBox(width: 10),
+                              MySimpleText(text: "${widget.project.city}, ${widget
+                                  .project.state}", size: 14),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          const Center(child: MySubHeadingText(text: "SELECT FLAT", color: Colors.black)),
+                          const SizedBox(height: 20),
+                          //add component here
+                          _isLoading ? const Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                                strokeWidth: 2,
+                              ),
+                            ],
+                          ) : filteredFlats.isEmpty ? const MySimpleText(text: 'No flats available', size: 18,) : Column(
+                            children: [
+                              for (final floorNumber in filteredFlats.map((flat) => flat.floorNumber).toSet().toList())
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      child: AppearAnimation(
+                                        child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Container(padding: const EdgeInsets.symmetric(vertical: 5),
+                                              width: MediaQuery.sizeOf(context).width*0.8,
+                                              decoration: const BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [Colors.blue, Colors.white],
+                                                  begin: Alignment.centerLeft,
+                                                  end: Alignment.centerRight,
+                                                ),
+                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                                                child: Text(
+                                                  getUserReadableFloorLabel(floorNumber),
+                                                  style: const TextStyle(
+                                                    fontFamily: 'OpenSans',
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    GridView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 4, crossAxisSpacing: 3.0, mainAxisSpacing: 3.0,
+                                      ),
+                                      itemCount: filteredFlats.where((flat) => flat.floorNumber == floorNumber).toList().length,
+                                      itemBuilder: (context, flatIndex) {
+                                        final flat = filteredFlats.where((flat) => flat.floorNumber == floorNumber).toList()[flatIndex];
+                                        return GridItem(
+                                          flat: flat,
+                                          onTap: () {
+                                            NetworkUtil.checkConnectionAndProceed(context, () {
+                                              Navigator.push(context, CustomPageRoute(nextPage: FlatDetails(flatId: flat.id, floorId: flat.floorId, project: widget.project, wingName: widget.wingName, floorNumber: getUserReadableFloorLabel(flat.floorNumber),), direction: 1));
+                                            });
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              const SizedBox(height: 50,),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
               ),
             ),
             Positioned(bottom: -5,
-              child: Container(color: Colors.white, width: MediaQuery.sizeOf(context).width,
+              child:Container(color: Colors.white, width: MediaQuery.sizeOf(context).width,
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     legendColumn("AVAILABLE", MyColor.gridYellow),
@@ -342,5 +328,4 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
       ),
     );
   }
-
 }

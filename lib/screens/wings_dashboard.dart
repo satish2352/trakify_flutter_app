@@ -137,7 +137,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
             ),
           ),
           const SizedBox(height: 5,),
-          MySimpleText(text: text, size: 12),
+          MySimpleText(text: text, size: 10, color: Colors.black,),
         ],
       ),
     );
@@ -267,7 +267,7 @@ class WingsDashboardPageState extends State<WingsDashboardPage> with RouteAware 
                                               child: Padding(
                                                 padding: const EdgeInsets.only(right: 8.0, left: 8.0),
                                                 child: Text(
-                                                  getUserReadableFloorLabel(floorNumber),
+                                                  getUserReadableFloorLabel(floorNumber).toUpperCase(),
                                                   style: const TextStyle(
                                                     fontFamily: 'OpenSans',
                                                     fontWeight: FontWeight.bold,

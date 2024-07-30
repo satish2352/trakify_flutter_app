@@ -173,13 +173,13 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
                             controller: scrollController,
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 5,
-                              mainAxisSpacing: 3,
+                              crossAxisSpacing: 25,
+                              mainAxisSpacing: 25,
                             ),
                             itemCount: wings.length,
                             itemBuilder: (context, index) {
                               String direction = (index%2==0) ? "right" : "left";
-                              return FadeInAnimation(delay: 1.4, direction: direction, child: _wingItem(wings[index]));
+                              return FadeInAnimation(delay: 1.4, direction: direction, child: Center(child: _wingItem(wings[index])));
                             },
                           ),
                         ),
@@ -208,37 +208,39 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
       child: SizedBox(width: MediaQuery.sizeOf(context).width*0.5 - 10,
         child: Stack(
           children:[
-            Positioned(top: 55,
-              child: Container(padding: const EdgeInsets.only(top: 40), width: MediaQuery.sizeOf(context).width*0.5-20,
-              decoration: BoxDecoration(border: Border.all(color: Colors.black),),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  columnData(MyColor.gridGreen, wing.bookedFlats),
-                  columnData(MyColor.gridBlue, wing.holdFlats),
-                  columnData(MyColor.gridYellow, wing.availableFlats),
-                  columnData(MyColor.gridRed, wing.blockedFlats),
-                ],),
-              ),
+            Column(
+              children: [
+                Container(padding: const EdgeInsets.only(left: 10, right: 10), height: 60,),
+                Material(elevation: 4, borderRadius: BorderRadius.circular(10),
+                  child: Container(padding: const EdgeInsets.only(left: 10, right: 10), height: 80,
+                    decoration: BoxDecoration(border: Border.all(color: Colors.black), borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+              ],
             ),
             Column(
               children: [
-              MySimpleText(
-                text: wing.name,
-                color: Colors.black,
-                size: 14,
-                bold: true,
-              ),
-              const SizedBox(height: 10,),
-              Center(
-                child: Container(width: 60, height: 60,
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(shape: BoxShape.circle, color: MyColor.bluePrimary),
-                  child: Image.asset("assets/images/wing_ic.png"),
+                MySimpleText(text: wing.name.toUpperCase(), color: Colors.black, size: 14, bold: true,),
+                const SizedBox(height: 10,),
+                Material(elevation: 4, shape: const CircleBorder(),
+                  child: Container(width: 60, height: 60,
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(shape: BoxShape.circle, color: MyColor.bluePrimary),
+                    child: Image.asset("assets/images/wing_ic.png"),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 10,),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    columnData(MyColor.gridGreen, wing.bookedFlats),
+                    columnData(MyColor.gridBlue, wing.holdFlats),
+                    columnData(MyColor.gridYellow, wing.availableFlats),
+                    columnData(MyColor.gridRed, wing.blockedFlats),
+                  ],
+                ),
               ],
             ),
-      ],
+          ],
         ),
       ),
     );
@@ -249,12 +251,10 @@ class _WingScreenState extends State<WingScreen> with RouteAware {
       padding: const EdgeInsets.all(5.0),
       child: Column(
         children: [
-          Container(
-            height: 15,
-            width: 15,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+          Material(elevation: 4, color: color, shape: const CircleBorder(),
+              child: Container(height: 15, width: 15, decoration: BoxDecoration(shape: BoxShape.circle, color: color),),
           ),
-          MySimpleText(text: count.toString(), size: 12),
+          MySimpleText(text: count.toString(), size: 12, bold: true, color: Colors.black,),
         ],
       ),
     );

@@ -110,7 +110,7 @@ class ProjectInfoState extends State<ProjectInfo> {
                       ),
                     ),
                     const SizedBox(height: 20,),
-                    Row(mainAxisAlignment: MainAxisAlignment.center,
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, mainAxisSize: MainAxisSize.max,
                       children: [
                         FadeInAnimation(delay: 2.6, direction: "right",
                             child: customStateWidget("AVAILABLE", MyColor.gridYellow, project.availableFlats, "assets/images/ic_available.png")),
@@ -118,7 +118,8 @@ class ProjectInfoState extends State<ProjectInfo> {
                             child: customStateWidget("BOOKED", MyColor.gridGreen, project.bookedFlats, "assets/images/ic_booked.png")),
                       ],
                     ),
-                    Row(mainAxisAlignment: MainAxisAlignment.center,
+                    const SizedBox(height: 20,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, mainAxisSize: MainAxisSize.max,
                       children: [
                         FadeInAnimation(delay: 2.6, direction: "right",
                             child: customStateWidget("ON HOLD", MyColor.gridBlue, project.heldFlats, "assets/images/ic_hold.png")),

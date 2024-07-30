@@ -33,7 +33,7 @@ class ProjectCardWidget extends StatelessWidget {
                     border: Border.all(color: Colors.grey, width: 1,),
                     color: Colors.grey[100],
                   ),
-                  child: Padding(padding: const EdgeInsets.only(left: 60),
+                  child: Padding(padding: EdgeInsets.only(left: MediaQuery.sizeOf(context).width*0.25/2 + 10),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min,
                       children: [
                         MySimpleText(text: project.name, size: 20, bold: true, color: Colors.black,),
@@ -46,7 +46,7 @@ class ProjectCardWidget extends StatelessWidget {
                             columnData(MyColor.gridYellow, project.availableFlats),
                             columnData(MyColor.gridRed, project.blockedFlats),
                             const SizedBox(width: 5,),
-                            Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min,
+                            Row(mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.max,
                               children: [
                                 const MySimpleText(text: "Flats", size: 15, color: Colors.blue, bold: true,),
                                 const SizedBox(width: 5,),
